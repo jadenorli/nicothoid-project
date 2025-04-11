@@ -76,8 +76,7 @@ egg_mass <- read_csv(here("raw_data", "egg_mass_data.csv")) %>% #read in the csv
   mutate(adult_nicos = as.numeric(adult_nicos)) %>% #make sure the counts of adult nicothoids is numeric
   filter(eds != "M") %>% #remove the rows where EDS is equal to stage M (the final stage - hatched)
   filter(!is.na(pleopod_number)) %>% #remove the rows where there is not a pleopod number recorded
-  filter(!is.na(day)) #%>%  #remove the rows where there is not a corresponding day 
-  #filter(!str_starts(trial_id, "Autoinfection"))
+  filter(!is.na(day))  #remove the rows where there is not a corresponding day 
   
 ```
 
@@ -653,6 +652,10 @@ adult_intensity <- ggplot() +
                                   size = 14), #size for the axis title fonts
         axis.text = element_text(size = 10))  #size for the axis text 
 
+#save the plot in the figures folder
+ggsave(here("figures", "figure_s2_a.jpg"), plot = adult_intensity)
+
+#print a preview of the plot  
 adult_intensity
 
 ```
@@ -684,6 +687,10 @@ larval_intensity <- ggplot() +
                                   size = 14), #size for the axis title fonts
         axis.text = element_text(size = 10))  #size for the axis text 
 
+#save the plot in the figures folder
+ggsave(here("figures", "figure_s2_b.jpg"), plot = larval_intensity)
+
+#print a preview of the plot  
 larval_intensity
 
 ```
@@ -714,37 +721,13 @@ nico_eggs_intensity <- ggplot() +
         axis.title = element_text(face = "bold", #bold the axis title 
                                   size = 14), #size for the axis title fonts
         axis.text = element_text(size = 10))  #size for the axis text 
-  
+
+#save the plot in the figures folder
+ggsave(here("figures", "figure_s2_c.jpg"), plot = nico_eggs_intensity)
+
+#print a preview of the plot  
 nico_eggs_intensity
 
 ```
 
-
-### iv) Final Figure
-
-```{r}
-# Define colors for each stage
-legend_colors <- c("nico_eggs" = "#AF6E78", 
-                  "larvae" = "#F29F05",
-                  "adults" = "#D95204")
-
-# Dummy plot with mapped colors
-legend_plot <- ggplot(data.frame(x = 1:3, y = 1:3, group = c("adults", "larvae", "nico_eggs")),
-                      aes(x = x, y = y, color = group)) +
-  geom_point() +
-  scale_color_manual(values = legend_colors,
-                     name = "Life Stages",
-                     labels = c("Adult", "Larval", "Nicothoid Eggs")) +
-  theme_void() +
-  theme(legend.position = "bottom",
-        legend.direction = "horizontal",
-        legend.text = element_text(family = "Times New Roman", size = 12),
-        legend.title  = element_text(family = "Times New Roman", 
-                                     size = 12,
-                                     face = "bold"),
-        legend.key.size = unit(0.5, "cm"))
-
-legend_plot
-
-```
 
