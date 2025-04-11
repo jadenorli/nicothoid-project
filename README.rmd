@@ -1,27 +1,3 @@
----
-title: "Discovery of an unidentified species of nicothoid copepod infesting cancrid crabs in Santa Barbara, California"
-author: 
-  - name: "Jaden E. Orli"
-    ORCID: 0009-0006-8419-6937 
-    affiliation: "Ecology, Evolution, and Marine Biology, and Marine Science Institute, University of California Santa Barbara, Santa Barbara, CA 93106, USA"
-    email: jadenorli@gmail.com
-  - name: "Sophia M. Lecuona"
-    affiliation: "Bren School of the Environment, University of California Santa Barbara, Santa Barbara, CA 93106, USA"
-  - name: "Gabrielle O. Plewe"
-    affiliation: "Ecology, Evolution, and Marine Biology, and Marine Science Institute, University of California Santa Barbara, Santa Barbara, CA 93106, USA"
-  - name: "Carson N. Gadler"
-    affiliation: "School of Dentistry, University of California San Francisco, San Francisco, CA 94143, USA"
-  - name: "Armand M. Kuris"
-    affiliation: "Ecology, Evolution, and Marine Biology, and Marine Science Institute, University of California Santa Barbara, Santa Barbara, CA 93106, USA"
-  - name: "Danny Tang"
-    affiliation: "Environmental Services Department, Orange County Sanitation District, Fountain Valley, CA 92708, USA"
-  - name: "Zoe L. Zilz"
-    ORCID: 0000-0001-7015-074X
-    affiliation: "Ecology, Evolution, and Marine Biology, and Marine Science Institute, University of California Santa Barbara, Santa Barbara, CA 93106, USA"
-    email: zoelzilz@gmail.com
-output: github_document
----
-
 # Abstract
 
 A previously unobserved and potentially novel copepod egg predator (Nicothoidae cf. *Choniosphaera* sp.) was recently discovered in the egg masses and gills of three commercially important rock crab species (*Cancer anthonyi*, *C. antennarius*, and *C. productus*) along the Gaviota Coast of Southern California west of Santa Barbara. Nicothoid egg predators have never been observed in crabs along the Pacific coast of the Americas, despite extensive historical work on cancrid crab brood mortality caused by nemertean egg predators in the 1990s. This outbreak is a recent and possibly unique event. Female copepods appear highly modified, mimicking the coloration and globular shape of crab eggs. The copepods feed by puncturing a small hole in the shell of the crab egg, aborting the development of the embryo and subsequently facilitating entry of microbial agents. We document high copepod prevalence in ovigerous crabs along the Santa Barbara coast. Lack of fishery management coupled with the geographical extent and host specificity of this potential threat to rock crab populations warrants further investigation.
@@ -342,3 +318,5 @@ See publication supplemental documentation (Appendix S1) for full methods.
     -   **host_order**: the order of the host species, decapoda
 
     -   **paper**: the paper corresponding to the first recording of this particular copepod egg predator on the various host species \`\`\`
+
+
