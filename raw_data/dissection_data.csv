@@ -1,0 +1,66 @@
+dissection_id,crab_id,sex ,species,date,nico_count,number_lamellae,notes,analysis_status
+Dissection-001,ANT-GAV-004,female,cancer_anthonyi,04/26/2022,NA,NA,"nicos present, no counts",exclude 
+Dissection-002,Zoe's crab,female,cancer_anthonyi,05/06/2022,NA,NA,"nicos present, no counts",exclude 
+Dissection-003,ANT-GAV-006,female,cancer_anthonyi,05/13/2022,NA,NA,"nicos present, no counts",exclude 
+Dissection-004,ANT-GAV-001,female,cancer_anthonyi,05/20/2022,NA,NA,"nicos present, no counts",exclude 
+Dissection-005,MPRO-UNK-001,male,cancer_productus,05/23/2022,NA,NA,dead on the ground for unknown amount of time before dissection,exclude 
+Dissection-006,MPRO-UNK-002,male,cancer_productus,05/23/2022,NA,NA,dead on the ground for unknown amount of time before dissection,exclude 
+Dissection-008,IFPRO-ALE-002,immature_female,cancer_productus,05/27/2022,NA,NA,no counts,exclude 
+Dissection-009,ANT-GAV-013,female,cancer_anthonyi ,05/27/2022,1635,540,,
+Dissection-010,ANT-GAV-015,female,cancer_anthonyi ,06/03/2022,64,562,,
+Dissection-011,ANT-GAV-002,female,cancer_anthonyi ,07/01/2022,603,610,,
+Dissection-012,ANT-GAV-003,female,cancer_anthonyi ,07/25/2022,659,606,,
+Dissection-013,ANT-GAV-008,female,cancer_anthonyi ,09/14/2022,314,570,,
+Dissection-014,ANT-GAV-010,female,cancer_anthonyi ,09/19/2022,739,638,,
+Dissection-015,ANT-GAV-012,female,cancer_anthonyi ,10/13/2022,121,592,,
+Dissection-016,ANT-GAV-009,female,cancer_anthonyi ,10/14/2022,1,536,,
+Dissection-017,MANT-GAV-001,male,cancer_anthonyi ,10/21/2022,21,740,,
+Dissection-018,MANT-GAV-002,male,cancer_anthonyi ,11/03/2022,9,642,,
+Dissection-019,ANT-GAV-019,female,cancer_anthonyi ,11/10/2022,393,786,,
+Dissection-020,ANT-GAV-027,female,cancer_anthonyi ,11/21/2022,66,848,,
+Dissection-021,ANT-GAV-025,female,cancer_anthonyi ,12/08/2022,1374,566,,
+Dissection-022,ANT-GAV-018,female,cancer_anthonyi ,12/08/2022,15,484,,
+Dissection-023,PRO-GAV-001,female,cancer_productus,01/24/2023,5,526,,
+Dissection-024,ANT-GAV-038,female,cancer_anthonyi ,02/02/2023,3794,790,,
+Dissection-025,ANT-GAV-037,female,cancer_anthonyi ,02/02/2023,1438,668,,
+Dissection-026,ATS-GAV-001,female,cancer_antennarius,02/07/2023,962,622,,
+Dissection-027,MANT-GAV-003,male,cancer_anthonyi ,02/16/2023,0,698,"(held for over a month before dissecting)
+-date receieved 10/14/2022
+-date dissected 02/16/2023",
+Dissection-028,MANT-GAV-005,male,cancer_anthonyi ,02/23/2023,0,696,"(held for over a month before dissecting)
+-date receieved 10/14/2022
+-date dissected 02/16/2023",
+Dissection-029,ANT-GAV-046,female,cancer_anthonyi ,02/28/2023,153,664,,
+Dissection-030,ANT-GAV-045,female,cancer_anthonyi ,03/07/2023,4380,612,,
+Dissection-031,MANT-GAV-008,male,cancer_anthonyi ,04/04/2023,12,720,,
+Dissection-032,MANT-GAV-009,male,cancer_anthonyi ,04/04/2023,1,720,,
+Dissection-033,MANT-GAV-010,male,cancer_anthonyi ,04/04/2023,20,692,,
+Dissection-034,MANT-GAV-011,male,cancer_anthonyi ,04/10/2023,5,630,,
+Dissection-035,MPRO-GAV-002,male,cancer_productus,04/12/2023,13,580,,
+Dissection-036,juvenile from Zoe,male,cancer_productus,04/12/2023,0,NA,not full dissection and no counts,exclude
+Dissection-037,MANT-GAV-012,male,cancer_anthonyi ,04/26/2023,7,670,,
+Dissection-038,MANT-GAV-015,male,cancer_anthonyi ,04/26/2023,2,672,,
+Dissection-039,MPRO-GAV-003,male,cancer_productus,04/26/2023,1,636,,
+Dissection-040,MANT-GAV-013,male,cancer_anthonyi ,05/03/2023,106,686,,
+Dissection-041,MANT-GAV-014,male,cancer_anthonyi ,05/03/2023,13,722,,
+Dissection-042,ANT-GAV-054,female,cancer_anthonyi ,05/10/2023,6648,676,,
+Dissection-043,ANT-GAV-056,female,cancer_anthonyi ,05/10/2023,52,596,,
+Dissection-044,MATS-GAV-001,male,cancer_antennarius,05/10/2023,1,608,,
+Dissection-045,MATS-GAV-002,male,cancer_antennarius,05/16/2023,6,548,,
+Dissection-046,PRO-GAV-008,female,cancer_productus,05/16/2023,1,578,,
+Dissection-047,ATS-GAV-003-exuvia,female,cancer_antennarius,05/24/2023,21,570,exuvia not crab data,exclude
+Dissection-048,ATS-GAV-003,female,cancer_antennarius,05/24/2023,9,562,,
+Dissection-049,MATS-GAV-005,male,cancer_antennarius,05/24/2023,8,678,,
+Dissection-050,PRO-GAV-007,female,cancer_productus,05/25/2023,0,622,,
+Dissection-051,MPRO-GAV-005,male,cancer_productus,05/31/2023,3,582,,
+Dissection-052,MATS-GAV-003,male,cancer_antennarius,05/31/2023,8,614,,
+Dissection-053,ATS-GAV-002,female,cancer_antennarius,05/31/2023,559,528,,
+Dissection-055,MATS-GAV-004,male,cancer_antennarius,06/07/2023,2,622,,
+Dissection-056,MPRO-GAV-006,male,cancer_productus,06/07/2023,4,624,,
+Dissection-057,MATS-GAV-009,male,cancer_antennarius,06/14/2023,7,528,,
+Dissection-058,MATS-GAV-008,male,cancer_antennarius,06/14/2023,NA,502,died due to lack of waterflow and counts were not taken ,exclude
+Dissection-059,MATS-GAV-006,male,cancer_antennarius,06/30/2023,4,600,,
+Dissection-060,ATS-GAV-004,female,cancer_antennarius,06/30/2023,6,544,,
+Dissection-061,IFATS-HEN-001,immature_female,cancer_antennarius,06/30/2023,0,432,,
+Dissection-062,IFATS-HEN-002,immature_female,cancer_antennarius,06/30/2023,0,384,,
+Dissection-063,ANT-GAV-063,female,cancer_anthonyi ,07/05/2023,164,656,,

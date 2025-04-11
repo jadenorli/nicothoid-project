@@ -1,0 +1,127 @@
+crab_id,collection_date,species,carapace_width,abdomen_width,sex,gravid,eds,location,notes,nico_date,first_location,dissected,nico_location,ever_gravid,final_notes,analysis_status
+ANT-GAV-001,04/02/2022,cancer_anthonyi,123,37,F,Y,A,gaviota,"- no missing limbs, little bit of rot from ventral right claw",04/05/2022,eggs,yes,both,Y,,
+ANT-GAV-002,04/02/2022,cancer_anthonyi,130,42,F,Y,D,gaviota,"- 4th spine from ventral view on the right has rot. 
+- missing dorsal L1, partial L3, partial R3",04/05/2022,eggs,yes,both,Y,,
+ANT-GAV-003,04/02/2022,cancer_anthonyi,133,42,F,Y,B,gaviota,- not missing any limbs or has rot,04/08/2022,eggs,yes,both,Y,,
+ANT-GAV-004,04/02/2022,cancer_anthonyi,112,35,F,Y,D,gaviota,"- dorsal view R2 missing
+- no rot, claws are not speckled at all and is very docile",04/05/2022,eggs,yes,both,Y,,
+ANT-GAV-005,04/02/2022,cancer_anthonyi,121,37,F,Y,A,gaviota,- on her worst behavior.,04/05/2022,eggs,no,egg_mass,Y,,
+ANT-GAV-006,04/02/2022,cancer_anthonyi,117,36,F,Y,B,gaviota,NA,04/06/2022,eggs,yes,both,Y,,
+ANT-GAV-007,04/02/2022,cancer_anthonyi,151,47,F,Y,B,gaviota,"- white film, faded coloration of carapace
+- little bit of rot on dorsal view L4",04/09/2022,eggs,no,egg_mass,Y,,
+ANT-GAV-008,04/02/2022,cancer_anthonyi,120,38,F,Y,F,gaviota,"- rot on ventral top middle
+- tear on second from top abdomen flap",04/12/2022,eggs,yes,both,Y,,
+ANT-GAV-009,04/02/2022,cancer_anthonyi,119,36,F,Y,G,gaviota,NA,04/06/2022,eggs,yes,both,Y,,
+ANT-GAV-010,04/02/2022,cancer_anthonyi,120,40,F,Y,D,gaviota,- plump egg sac,04/06/2022,eggs,yes,both,Y,,
+ANT-GAV-011,04/02/2022,cancer_anthonyi,142,44,F,Y,B,gaviota,NA,NA,NA,no,NA,Y,died before examination,exclude
+ANT-GAV-012,04/02/2022,cancer_anthonyi,132,41,F,Y,C,gaviota,NA,04/10/2022,eggs,yes,both,Y,,
+ANT-GAV-013,04/02/2022,cancer_anthonyi,134,45,F,Y,B,gaviota,"- missing dorsal partial L4, full R1, R3
+- no visible rot",04/10/2022,eggs,yes,both,Y,,
+ANT-GAV-014,04/02/2022,cancer_anthonyi,113,35,F,Y,G,gaviota,NA,04/07/2022,eggs,no,egg_mass,Y,,
+ANT-GAV-015,04/02/2022,cancer_anthonyi,124,44,F,Y,D,gaviota,- partial missing of dorsal L4,04/07/2022,eggs,yes,both,Y,,
+Zoe's Crab ,04/02/2022,cancer_anthonyi,NA,NA,F,Y,unk,gaviota,NA,05/06/2022,gills,yes,both,Y,,
+MPRO-UNK-001,05/20/2022,cancer_productus,60,13,M,NA,NA,unknown,NA,NA,NA,yes,neither,NA,dead for an unknown amount of time on the ground,exclude
+MPRO-UNK-002,unk ,cancer_productus,123,16,M,NA,NA,unknown,NA,NA,NA,yes ,neither,NA,dead for an unknown amount of time on the ground,exclude
+IFPRO-ALE-001,05/23/2022,cancer_productus,59,13,IF,N,NA,alegria,-cracked carapace ,not observed,NA,no,neither,NA,,
+IFPRO-ALE-002,05/23/2022,cancer_productus,57,12,IF,N,NA,alegria,NA,not observed,NA,yes,neither,NA,,
+ANT-GAV-016,10/14/2022,cancer_anthonyi,144,50,F,N,NA,gaviota,NA,11/03/2022,eggs,no,egg_mass,Y,,
+MANT-GAV-001,10/14/2022,cancer_anthonyi,138,17,M,NA,NA,gaviota,"missing L3, L4, L5 legs ",10/21/2022,gills,yes,gills,NA,,
+ANT-GAV-017,10/14/2022,cancer_anthonyi,131,43,F,Y,E,gaviota,,NA,NA,no,NA,Y,was only examined on the day of collection (not sufficent search effort),exclude
+ANT-GAV-018,10/14/2022,cancer_anthonyi,127,42,F,Y,E,gaviota,"missing L4, L5 legs",12/08/2022,eggs,yes,both,Y,,
+MANT-GAV-002,10/14/2022,cancer_anthonyi,133,17,M,NA,NA,gaviota,NA,11/03/2022,gills,yes,gills,NA,,
+ANT-GAV-019,10/14/2022,cancer_anthonyi,135,45,F,N,NA,gaviota,home to several barnacles,11/10/2022,gills,yes,gills,N,,
+MANT-GAV-003,10/14/2022,cancer_anthonyi,142,18,M,NA,NA,gaviota,NA,not observed,NA,yes,neither,NA,"(held for over a month before dissecting)
+-date receieved 10/14/2022
+-date dissected 02/16/2023",
+ANT-GAV-020,10/14/2022,cancer_anthonyi,126,42,F,Y,B,gaviota,barnacles on L1,NA,NA,no,NA,Y,was only examined on the day of collection (not sufficent search effort),exclude
+MANT-GAV-004,10/14/2022,cancer_anthonyi,157,21,M,NA,NA,gaviota,NA,NA,NA,no,NA,NA,died before examination,exclude
+MANT-GAV-005,10/14/2022,cancer_anthonyi,151,18,M,NA,NA,gaviota,NA,not observed ,NA,yes,neither,NA,"(held for over a month before dissecting)
+-date receieved 10/14/2022
+-date dissected 02/23/2023",
+ANT-GAV-021,10/14/2022,cancer_anthonyi,122,39,F,Y,D,gaviota,NA,NA,NA,no,NA,Y,was only examined on the day of collection (not sufficent search effort),exclude
+ANT-GAV-022,10/14/2022,cancer_anthonyi,124,39,F,Y,D,gaviota,NA,NA,NA,no,NA,Y,was only examined on the day of collection (not sufficent search effort),exclude
+ANT-GAV-023,10/14/2022,cancer_anthonyi,139,51,F,Y,I,gaviota,"Dark eggs, possibly later in development",10/14/2022,eggs,no,egg_mass,Y,,
+MANT-GAV-006,10/14/2022,cancer_anthonyi,139,19,M,NA,NA,gaviota,NA,NA,NA,no,NA,NA,died before examination,exclude
+ANT-GAV-024,10/14/2022,cancer_anthonyi,135,43,F,Y,D,gaviota,NA,NA,NA,no,NA,Y,was only examined on the day of collection (not sufficent search effort),exclude
+ANT-GAV-025,10/14/2022,cancer_anthonyi,122,35,F,Y,B,gaviota,3 large barnacles atop carapace,11/09/2022,eggs,yes,both,Y,,
+ANT-GAV-026,10/14/2022,cancer_anthonyi,124,40,F,Y,D,gaviota,missing L2 and R2,NA,NA,no,NA,Y,was only examined on the day of collection (not sufficent search effort),exclude
+ANT-GAV-027,10/14/2022,cancer_anthonyi,124,42,F,N,NA,gaviota,small barnacle on left middle of carapace,11/21/2022,gills,yes,both,Y,,
+MANT-GAV-007,10/14/2022,cancer_anthonyi,142,20,M,NA,NA,gaviota,NA,NA,NA,no,NA,NA,died before examination,exclude
+ANT-GAV-030,01/20/2023,cancer_anthonyi,136,44,F,Y,I,gaviota,,01/21/2023,eggs,no ,egg_mass,Y,,
+ANT-GAV-031,01/20/2023,cancer_anthonyi,139,46,F,Y,I,gaviota,,01/21/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-032,01/20/2023,cancer_anthonyi,133,42,F,Y,J,gaviota,"Nico presence, infected. Some eggs look stage I but some are only two lobed yolk instead of 4 so I put J",01/20/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-033,01/20/2023,cancer_anthonyi,130,39,F,Y,J,gaviota,,01/22/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-034,01/20/2023,cancer_anthonyi,136,44,F,Y,G,gaviota,Didn't see heart beat (EDS),01/22/2023,eggs,no ,egg_mass,Y,,
+ANT-GAV-035,01/20/2023,cancer_anthonyi,128,43,F,Y,J,gaviota,Nico and nemertean infection. I also see more stunted eggs than in other samples,01/20/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-036,01/20/2023,cancer_anthonyi,127,43,F,Y,I ,gaviota,nico infestation(juveniles Copepodid 1/2 and nico eggs),01/20/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-037,01/20/2023,cancer_anthonyi,129,44,F,Y,I,gaviota,"missing L pincher, nico infestation of juveniles AND nico eggs present",01/23/2023,eggs,yes,both,Y,,
+ANT-GAV-038,01/20/2023,cancer_anthonyi,137,46,F,Y,I,gaviota,"missing tip of top R leg, nico eggs present",01/23/2023,eggs,yes,both,Y,,
+ANT-GAV-039,01/20/2023,cancer_anthonyi,121,40,F,Y,J,gaviota,Almost see separation of yolk lobes,NA,NA,no,NA,Y,was only examined on the day of collection (not sufficent search effort),exclude
+MPRO-GAV-001,01/20/2023,cancer_productus,141,18,M,NA,NA,gaviota,,NA,NA,no,NA,NA,died before examination,exclude
+PRO-GAV-001,01/20/2023,cancer_productus,140,42,F,N,NA,gaviota,,01/24/2023,gills,yes,gills,N,,
+PRO-GAV-002,01/20/2023,cancer_productus,154,41,F,N,NA,gaviota,,01/24/2023,eggs,no,egg_mass,Y,,
+ATS-GAV-001,01/20/2023,cancer_antennarius,115,35,F,N,NA,gaviota,,02/07/2023,eggs,yes,both,Y,,
+ANT-GAV-040,01/20/2023,cancer_anthonyi,123,38,F,Y,J,gaviota,Infested (copepodids and adults),01/20/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-041,02/03/2023,cancer_anthonyi,138,39,F,Y,F,gaviota,missing tip of R2 (count from bottom to top 1-2-3-4-pincher),02/04/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-042,02/03/2023,cancer_anthonyi,140,41,F,Y,F,gaviota,,02/04/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-043,02/03/2023,cancer_anthonyi,143,49,F,Y,D,gaviota,,02/13/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-044,02/03/2023,cancer_anthonyi,144,50,F,Y,E,gaviota,,02/06/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-045,02/03/2023,cancer_anthonyi,130,45,F,Y,D,gaviota,2 barnacles on second flap,02/05/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-046,02/03/2023,cancer_anthonyi,138,52,F,Y,E,gaviota,missing leg R4,02/06/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-047,02/03/2023,cancer_anthonyi,141,50,F,Y,E,gaviota,missing L4,02/06/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-048,02/03/2023,cancer_anthonyi,139,44,F,Y,E,gaviota,,02/11/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-049,02/03/2023,cancer_anthonyi,140,47,F,Y,B,gaviota,two super small barnacles on top white,02/19/2023,eggs,no,egg_mass,Y,,
+PRO-GAV-003,02/03/2023,cancer_productus,141,44,F,Y,A,gaviota,,02/13/2023,eggs,no,egg_mass,Y,,
+PRO-GAV-004,02/03/2023,cancer_productus,153,44,F,Y,A,gaviota,,NA,NA,no,NA,Y,was only examined on the day of collection (not sufficent search effort),exclude
+PRO-GAV-005,02/03/2023,cancer_productus,134,38,F,Y,A,gaviota,originally was labeled as 002 so the identification photos will say 002. The crab is 005,NA,NA,no,NA,Y,was only examined on the day of collection (not sufficent search effort),exclude
+ANT-GAV-050,03/31/2023,cancer_anthonyi,138,46,F,Y,E,gaviota,,04/06/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-051,03/31/2023,cancer_anthonyi,117,40,F,Y,B,gaviota,right pincher black injury mark,03/31/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-052,03/31/2023,cancer_anthonyi,129,43,F,Y,E,gaviota,,03/31/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-053,03/31/2023,cancer_anthonyi,120,37,F,Y,E,gaviota,,03/31/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-054,03/31/2023,cancer_anthonyi,132,45,F,Y,E,gaviota,,03/31/2023,eggs,yes,both,Y,,
+ANT-GAV-055,03/31/2023,cancer_anthonyi,128,42,F,Y,E,gaviota,left pincher two black scars present,04/04/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-056,03/31/2023,cancer_anthonyi,127,42,F,Y,D,gaviota,seems small small pinchers,03/31/2023,eggs,yes,both,Y,,
+ANT-GAV-057,03/31/2023,cancer_anthonyi,131,43,F,Y,F,gaviota,,03/31/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-058,03/31/2023,cancer_anthonyi,117,38,F,Y,F,gaviota,right pincher has shorter upper claw,03/31/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-059,03/31/2023,cancer_anthonyi,135,47,F,Y,D,gaviota,small black injury mark on bottom of the top of the carapace,03/31/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-060,03/31/2023,cancer_anthonyi,133,41,F,Y,A,gaviota,"Has light yellow color, barnacles on both bottom legs and left pncher",04/02/2023,eggs,no,egg_mass,Y,,
+MANT-GAV-008,03/31/2023,cancer_anthonyi,129,11,M,NA,NA,gaviota,,04/04/2023,gills,yes,gills,NA,,
+MANT-GAV-009,03/31/2023,cancer_anthonyi,151,21,M,NA,NA,gaviota,,04/04/2023,gills,yes ,gills,NA,,
+MANT-GAV-010,03/31/2023,cancer_anthonyi,144,12,M,NA,NA,gaviota,,04/04/2023,gills,yes ,gills,NA,,
+MANT-GAV-011,03/31/2023,cancer_anthonyi,149,18,M,NA,NA,gaviota,,04/10/2023,gills,yes,gills,NA,,
+MPRO-GAV-002,03/31/2023,cancer_productus,150,17,M,NA,NA,gaviota,one SMOL claw!!!,04/12/2023,gills,yes ,gills,NA,,
+PRO-GAV-006,03/31/2023,cancer_productus,124,33,F,Y,A,gaviota,small barnacle on topside bottom right,03/31/2023,eggs,no,egg_mass,Y,,
+MANT-GAV-012,04/21/2023,cancer_anthonyi,129,12,M,NA,NA,gaviota,Smallish,04/26/2023,gills,yes,gills,NA,,
+MANT-GAV-013,04/21/2023,cancer_anthonyi,139,26,M,NA,NA,gaviota,slightly bigger than smallest,05/03/2023,gills,yes,gills,NA,,
+MANT-GAV-014,04/21/2023,cancer_anthonyi,143,20,M,NA,NA,gaviota,lighter color,05/03/2023,gills,yes ,gills,NA,,
+MANT-GAV-015,04/21/2023,cancer_anthonyi,125,11,M,NA,NA,gaviota,no barnacles on top of carapace or blemishes,04/26/2023,gills,yes ,gills,NA,,
+MPRO-GAV-003,04/21/2023,cancer_productus,162,22,M,NA,NA,gaviota,"large, missing left pincher",04/26/2023,gills,yes ,gills,NA,,
+PRO-GAV-007,05/05/2023,cancer_productus,157,51,F,N,NA,gaviota,big crab,not observed ,NA,yes,neither,N,-this crab never had eggs for us to examine but no nicos were seen in the gills during the dissection ,
+PRO-GAV-008,05/05/2023,cancer_productus,155,49,F,N,NA,gaviota,"big, darker/more grey near head. tiny white barnacle on the right side",05/16/2023,gills,yes,gills,N,,
+MPRO-GAV-004,05/05/2023,cancer_productus,165,21,M,NA,NA,gaviota,big,NA,NA,no,NA,NA,died before examination,exclude
+MATS-GAV-001,05/05/2023,cancer_antennarius,142,17,M,NA,NA,gaviota,huge pinchers but body not too large,05/10/2023,NA,yes,gills,NA,-this crab had a polychete and appears to be not in good health overall ,
+MATS-GAV-002,05/05/2023,cancer_antennarius,131,15,M,NA,NA,gaviota,big pinchers also relatively small,05/16/2023,gills,yes,gills,NA,,
+PRO-ALE-001,04/16/2023,cancer_productus,NA,NA,F,Y,unk,alegria,"-this is the first time that we have seen adult nicos in a red rock crab 
+-all photos taken after ethanoling ",04/17/2023,eggs,no,egg_mass,Y,,
+MPRO-GAV-005,05/19/2023,cancer_productus,157,18,M,NA,NA,gaviota,hold top of carpace,05/31/2023,gills,yes,gills,NA,,
+MPRO-GAV-006,05/19/2023,cancer_productus,180,24,M,NA,NA,gaviota,big af,06/07/2023,gills,yes,gills,NA,,
+ATS-GAV-002,05/19/2023,cancer_antennarius,128,41,F,Y,M,gaviota,"-taking photos at 157.5x magnification of adult nicos
+-all life stages of nicos present in sample",05/19/2023,eggs,yes,both,Y,,
+ATS-GAV-003,05/19/2023,cancer_antennarius,103,31,F,N,NA,gaviota,bebe,05/24/2023,gills,yes,gills,N,"- this crab molted on 05/23/2023 and the molt was placed in running seawater until the molt and gills could be examined on 05/24/2023
+-there were nicos found in the gills of the exuvia on 05/24/2023",
+MATS-GAV-003,05/19/2023,cancer_antennarius,134,18,M,NA,NA,gaviota,big claws,05/31/2023,gills,yes,gills,NA,,
+MATS-GAV-004,05/19/2023,cancer_antennarius,152,19,M,NA,NA,gaviota,,06/07/2023,gills,yes ,gills,NA,,
+MATS-GAV-005,05/19/2023,cancer_antennarius,126,15,M,NA,NA,gaviota,,05/16/2023,gills,yes ,gills,NA,,
+ATS-GAV-003 (post molt),05/24/2023,cancer_antennarius,127,39,F,N,NA,gaviota,measurements after molting ,05/24/2023,gills,yes ,gills,N,-this is the crab that molted ,
+ANT-SIO-002,05/24/2023,cancer_anthonyi,85,28,F,Y,J,scripps,-first crab from San Diego with nicos,05/25/2023,eggs,no,egg_mass,Y,-this is the first crab that has nicos that is not from Santa Barbara that we have examined and confirmed presence of nicos ,
+MATS-GAV-006,06/09/2023,cancer_antennarius,138,20,M,NA,NA,gaviota,"missing right pincher, crack on carapace near top of bottom right leg",06/30/2023,gils,yes,gills,NA,,
+MATS-GAV-007,06/09/2023,cancer_antennarius,123,16,M,NA,NA,gaviota,"missing left pincher, crack on bottom left leg",NA,NA,no,NA,NA,died before examination,exclude
+MATS-GAV-008,06/09/2023,cancer_antennarius,125,15,M,NA,NA,gaviota,both claws intact,06/14/2023,gills,yes,gills,NA,was dead due to lack of water flow for up to 48 hours before dissected,
+MATS-GAV-009,06/09/2023,cancer_antennarius,134,21,M,NA,NA,gaviota,large male big pinchers,06/14/2023,gills,yes,gills,NA,was dead due to lack of water flow for up to 48 hours before dissected,
+ATS-GAV-004,06/09/2023,cancer_antennarius,111,33,F,N,NA,gaviota,so small,06/30/2023,gills,yes,gills,N,,
+ANT-GAV-061,06/09/2023,cancer_anthonyi,138,48,F,Y,D,gaviota,,NA,NA,no,NA,Y,was only examined on the day of collection (not sufficent search effort),exclude
+ANT-GAV-062,06/09/2023,cancer_anthonyi,129,45,F,Y,E,gaviota,yes to nicos ,06/09/2023,eggs,no,egg_mass,Y,,
+ANT-GAV-063,06/09/2023,cancer_anthonyi,136,46,F,Y,E,gaviota,barnacles on carapace and leg,06/21/2023,eggs,yes,both,Y,,
+ANT-GAV-064,06/09/2023,cancer_anthonyi,129,44,F,Y,F,gaviota,,06/21/2023,eggs,no,egg_mass,Y,,
+IFATS-HEN-001,06/15/2023,cancer_antennarius,56,14,F,N,NA,hendrys,,not observed,NA,yes,neither,NA,,
+IFATS-HEN-002,06/15/2023,cancer_antennarius,56,13,F,N,NA,hendrys,,not observed,NA,yes,neither,NA,,

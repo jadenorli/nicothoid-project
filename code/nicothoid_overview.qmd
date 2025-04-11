@@ -1,0 +1,750 @@
+---
+title: ""
+author: "Jaden Orli"
+date: last-modified
+execute: 
+  eval: true
+  message: false
+  warning: false 
+format:
+  html:
+    theme: minty
+    css: custom.css
+    toc: true
+    toc-title: "Table of Contents:"
+    code-fold: true
+editor:
+  chunk_output_type: inline
+embed-resources: true
+---
+
+
+# I. Set Up 
+
+## a) Load Libraries
+
+```{r setup, include = TRUE, echo = FALSE, warning = FALSE, message = FALSE}
+#clear out the environment
+rm(list = ls())
+
+#load the necessary packages
+require(dplyr)
+require(tidyr)
+require(janitor)
+require(here)
+require(readr)
+require(ggplot2)
+require(sf)
+require(rnaturalearth)
+require(tmap)
+require(calecopal)
+require(patchwork)
+require(stringr)
+require(cowplot)
+
+```
+
+
+## b) Read in Data
+
+### i) Metadata 
+
+```{r}
+#read in the metadata and tidy it up 
+metadata <- read.csv(here("raw_data", "metadata.csv")) %>% #read in the csv
+  clean_names() %>% #clean names into tidy notation
+  filter(analysis_status != "exclude") %>% #remove the rows that were noted to be excluded (look at notes for reasoning)
+  filter(!grepl("post molt", crab_id, ignore.case = TRUE)) %>% #remove the row for ATS-GAV-003 post molt 
+  mutate(nico_present = case_when(nico_location %in% c("egg_mass", "gills", "both") ~ "yes", #when the nico location was egg mass, gills, or both than nicos are present "yes"
+                                  nico_location == "neither" ~ "no")) %>% #when the nico location is neither than nicos are not present "no"
+  mutate(new_class = case_when(species == "cancer_anthonyi" ~ "metacarcinus_anthonyi", #cancer anthonyi reclassified as metacarcinus anthonyi
+                               species == "cancer_productus" ~ "cancer_productus", #no change to cancer productus
+                               species == "cancer_antennarius" ~ "romaleon_antennarium")) %>% #cancer anntennarius changed to romaleon antennarium 
+  mutate(simple_sex = case_when(sex == "F" ~ "F", #classify sexually mature females as female "F"
+                                sex == "IF" ~ "F", #classify immature females as female "F"
+                                sex == "M" ~ "M")) #classify all males as male "M"
+
+```
+
+
+### ii) Egg Mass Data
+
+```{r}
+#read in the egg mass data and tidy it up 
+egg_mass <- read_csv(here("raw_data", "egg_mass_data.csv")) %>% #read in the csv 
+  clean_names()  %>%  #clean names into tidy notation 
+  mutate(adult_nicos = as.numeric(adult_nicos)) %>% #make sure the counts of adult nicothoids is numeric
+  filter(eds != "M") %>% #remove the rows where EDS is equal to stage M (the final stage - hatched)
+  filter(!is.na(pleopod_number)) %>% #remove the rows where there is not a pleopod number recorded
+  filter(!is.na(day)) #%>%  #remove the rows where there is not a corresponding day 
+  #filter(!str_starts(trial_id, "Autoinfection"))
+  
+```
+
+### iii) Dissection Data
+
+```{r}
+#read in the dissection data and tidy it up
+dissection <- read_csv(here("raw_data", "dissection_data.csv")) %>% #read in the csv
+  clean_names() %>%  #clean names into tidy notation
+  filter(!analysis_status %in% "exclude") #remove the rows where the analysis status was labeled exclude 
+
+```
+
+### iv) Choniosphaera Species Locations
+
+```{r}
+#read in the data with the locations of the choniosphaera species and tidy it up
+locations <- read_csv(here("raw_data", "locations.csv")) %>%  #read in the csv
+  clean_names() #clean names into tidy notation 
+  
+```
+
+## c) Color Palettes
+
+### i) Choniosphaera Species 
+
+```{r}
+#generate a palette from the calecopal fire color palette
+fire_palette <- cal_palette(name = "fire")
+
+#generate a palette from the calecopal gayophytum color palette
+gayophytum_palette <- cal_palette(name = "gayophytum")
+
+#create a vector of selected hex codes from the fire_palette and gayophytum_palette
+choniosphaera_palette <- c("Ch. cancrorum" = "#E60505",
+                           "Ch. maenadis" = "#4A5438",
+                           "Ch. indica" = "#C2607F", 
+                           "Ch. sp." = "#F66C09",
+                           "country_color" = "#D9E4DC")
+
+```
+
+
+### ii) Nicothoid Life Stages
+
+```{r}
+#generate a palette from the calecopal superbloom1 color palette
+superbloom1_palette <- cal_palette(name = "superbloom1")
+
+#generate a palette from the calecopal calochortus color palette
+calochortus_palette <- cal_palette(name = "calochortus")
+
+#create a vector of selected hex codes from the superbloom1_palette and calochortus_palette
+nico_palette <- c("nico_eggs" = "#AF6E78",  
+                  "larvae" = "#F29F05",
+                  "adults" = "#D95204",
+                  "total_nicos" = "#A62F03",
+                  "average" = "black")
+
+```
+
+
+# II. Metadata Summaries 
+
+## a) Metacarcinus anthonyi 
+
+### i) Prevalence Infected Inviduals Classified by Sex
+
+```{r}
+#create a dataframe with just the metadata for the yellow rock crabs 
+anthonyi <- metadata %>% #start with the metadata_clean dataframe
+  filter(new_class == "metacarcinus_anthonyi") #only keep the yellow rock crabs 
+
+#create a dataframe summarizing the number of total yellow rock crabs based on sex 
+anthonyi_sex <- anthonyi %>% #start with the anthonyi dataframe
+  group_by(simple_sex) %>% #group the individuals based on sex 
+  reframe(total_sex = n()) %>% #calculate the number of individuals by sex
+  pivot_longer(cols = total_sex, #pivot longer so that we have a column for sex and count 
+               values_to = "count") %>% #have the number of individuals per sex under the column "count"
+  select(simple_sex, count) #only keep the necessary columns
+
+#save the number of female yellow rock crabs 
+female_anthonyi <- anthonyi_sex %>% #start with the anthonyi_sex dataframe
+  filter(simple_sex == "F") %>% #only keep the female individuals 
+  pull(count) #extract the value from the count column
+
+#save the number of male yellow rock crabs 
+male_anthonyi <- anthonyi_sex %>% #start with the anthonyi_sex dataframe
+  filter(simple_sex == "M") %>% #only keep the male individuals 
+  pull(count) #extract the value from the count column
+
+#create a dataframe summarizing the number of infested yellow rock crabs based on sex 
+anthonyi_summary <- anthonyi %>% #start with the anthonyi dataframe 
+  group_by(simple_sex, nico_present) %>% #group the individuals based on sex and nicothoid prevalence (yes/no)
+  reframe(total_infested = n()) %>% #calculate the number of infested individuals 
+  pivot_longer(cols = total_infested, #pivot longer so that we have a column for sex, nicothoid prevalence (yes/no), and count 
+               values_to = "total_infested") %>% #have the number of individuals per class under the column "count"
+  mutate(prevalence_infested = case_when(simple_sex == "F" ~ round((total_infested/female_anthonyi)*100, 2), #divide the count by the total number of females
+                                         simple_sex == "M" ~ round((total_infested/male_anthonyi)*100, 2))) %>% #divide the count by the total number of males
+  mutate(total_individuals = case_when(simple_sex == "F" ~ female_anthonyi, #insert the total number of females
+                                       simple_sex == "M" ~ male_anthonyi)) %>%  #insert the total number of males 
+  filter(nico_present == "yes") %>% #only keep the rows for the infested counts
+  select(simple_sex, total_infested, total_individuals, prevalence_infested) #only keep the necessary columns 
+
+```
+
+
+### ii) Prevalence Infected Egg Masses
+
+```{r}
+#create a dataframe with the gravid yellow rock crabs 
+gravid_anthonyi <- anthonyi %>% #start with the anthonyi dataframe
+  filter(sex == "F") %>% #select only the sexually mature females 
+  filter(ever_gravid == "Y") %>%  #select only the gravid females
+  reframe(total_gravid = n()) %>% #calculate the total number of gravid females
+  pull(total_gravid) #extract the value from the total_gravid column
+
+#create a dataframe with the with an overview of the prevalence of infested egg masses from gravid yellow rock crabs 
+anthonyi_egg_mass <- anthonyi %>% #start with the anthonyi dataframe 
+  filter(sex == "F") %>% #select only the sexually mature females 
+  group_by(nico_location) %>% #group the individuals based on the location of where the nicothoids were found
+  reframe(total_infested = n()) %>% #calculate the number of individuals which had infested egg masses, gills, or both
+  mutate(eggs_infested = case_when(nico_location == "egg_mass" ~ "yes", #when nico location is egg mass then nicos are found in the eggs "yes"
+                                   nico_location == "both" ~ "yes", #when nico location is both then nicos are found in the eggs "yes"
+                                   nico_location == "neither" ~ "no", #when nico location is neither then nicos are NOT found in the eggs "no"
+                                   nico_location == "NA" ~ "no", #when nico location is NA then nicos are NOT found in the eggs "no"
+                                   nico_location == "gills" ~ "no")) %>% #when nico location is fills then nicos are NOT found in the eggs "no"
+  select(eggs_infested, total_infested) %>% #only keep the necessary columns
+  group_by(eggs_infested) %>% #group the individuals based on whether or not the individuals are infested ("yes") or not ("no")
+  reframe(total_infested_eggs = sum(total_infested)) %>% #calculate the number of individuals which are infested 
+  mutate(total_individuals = gravid_anthonyi) %>% #create a column with the total number of gravid individuals 
+  mutate(prevalence_infested = round((total_infested_eggs/total_individuals)*100, 2)) %>% #calculate the prevalence of infested egg masses out of all gravid female yellow rock crabs 
+  filter(eggs_infested == "yes") %>% #only keep the rows for the infested counts
+  select(eggs_infested, total_infested_eggs, total_individuals, prevalence_infested) #only keep the necessary columns 
+
+```
+
+
+
+
+## b) Cancer productus 
+
+### i) Prevalence Infected Inviduals Classified by Sex
+
+```{r}
+#create a dataframe with just the metadata for the red rock crabs 
+productus <- metadata %>% #start with the metadata_clean dataframe
+  filter(new_class == "cancer_productus") #only keep the red rock crabs 
+
+#create a dataframe summarizing the number of total red rock crabs based on sex 
+productus_sex <- productus %>% #start with the productus dataframe
+  group_by(simple_sex) %>% #group the individuals based on sex 
+  reframe(total_sex = n()) %>% #calculate the number of individuals by sex
+  pivot_longer(cols = total_sex, #pivot longer so that we have a column for sex and count 
+               values_to = "count") %>% #have the number of individuals per sex under the column "count"
+  select(simple_sex, count) #only keep the necessary columns
+
+#save the number of female red rock crabs 
+female_productus <- productus_sex %>% #start with the productus_sex dataframe
+  filter(simple_sex == "F") %>% #only keep the female individuals 
+  pull(count) #extract the value from the count column
+
+#save the number of male red rock crabs 
+male_productus <- productus_sex %>% #start with the productus_sex dataframe
+  filter(simple_sex == "M") %>% #only keep the male individuals 
+  pull(count) #extract the value from the count column
+
+#create a dataframe summarizing the number of infested red rock crabs based on sex 
+productus_summary <- productus %>% #start with the productus dataframe 
+  group_by(simple_sex, nico_present) %>% #group the individuals based on sex and nicothoid prevalence (yes/no)
+  reframe(total_infested = n()) %>% #calculate the number of infested individuals 
+  pivot_longer(cols = total_infested, #pivot longer so that we have a column for sex, nicothoid prevalence (yes/no), and count 
+               values_to = "total_infested") %>% #have the number of individuals per class under the column "count"
+  mutate(prevalence_infested = case_when(simple_sex == "F" ~ round((total_infested/female_productus)*100, 2), #divide the count by the total number of females
+                                         simple_sex == "M" ~ round((total_infested/male_productus)*100, 2))) %>% #divide the count by the total number of males
+  mutate(total_individuals = case_when(simple_sex == "F" ~ female_productus, #insert the total number of females
+                                       simple_sex == "M" ~ male_productus)) %>%  #insert the total number of males 
+  filter(nico_present == "yes") %>% #only keep the rows for the infested counts
+  select(simple_sex, total_infested, total_individuals, prevalence_infested) #only keep the necessary columns 
+
+```
+
+
+### ii) Prevalence Infected Egg Masses
+
+```{r}
+#create a dataframe with the gravid red rock crabs 
+gravid_productus <- productus %>% #start with the productus dataframe
+  filter(sex == "F") %>% #select only the sexually mature females 
+  filter(ever_gravid == "Y") %>%  #select only the gravid females
+  reframe(total_gravid = n()) %>% #calculate the total number of gravid females
+  pull(total_gravid) #extract the value from the total_gravid column
+
+#create a dataframe with the with an overview of the prevalence of infested egg masses from gravid red rock crabs
+productus_egg_mass <- productus %>% #start with the productus dataframe 
+  filter(sex == "F") %>% #select only the sexually mature females 
+  group_by(nico_location) %>% #group the individuals based on the location of where the nicothoids were found
+  reframe(total_infested = n()) %>% #calculate the number of individuals which had infested egg masses, gills, or both
+  mutate(eggs_infested = case_when(nico_location == "egg_mass" ~ "yes", #when nico location is egg mass then nicos are found in the eggs "yes"
+                                   nico_location == "both" ~ "yes", #when nico location is both then nicos are found in the eggs "yes"
+                                   nico_location == "neither" ~ "no", #when nico location is neither then nicos are NOT found in the eggs "no"
+                                   nico_location == "NA" ~ "no", #when nico location is NA then nicos are NOT found in the eggs "no"
+                                   nico_location == "gills" ~ "no")) %>% #when nico location is fills then nicos are NOT found in the eggs "no"
+  select(eggs_infested, total_infested) %>% #only keep the necessary columns
+  group_by(eggs_infested) %>% #group the individuals based on whether or not the individuals are infested ("yes") or not ("no")
+  reframe(total_infested_eggs = sum(total_infested)) %>% #calculate the number of individuals which are infested 
+  mutate(total_individuals = gravid_anthonyi) %>% #create a column with the total number of gravid individuals 
+  mutate(prevalence_infested = round((total_infested_eggs/total_individuals)*100, 2)) %>% #calculate the prevalence of infested egg masses out of all gravid female red rock crabs 
+  filter(eggs_infested == "yes") %>% #only keep the rows for the infested counts
+  select(eggs_infested, total_infested_eggs, total_individuals, prevalence_infested) #only keep the necessary columns 
+
+```
+
+
+## c) Romaleon antennarium  
+
+### i) Prevalence Infected Inviduals Classified by Sex
+
+```{r}
+#create a dataframe with just the metadata for the brown rock crabs 
+antennarium <- metadata %>% #start with the metadata_clean dataframe
+  filter(new_class == "romaleon_antennarium") #only keep the brown rock crabs 
+
+#create a dataframe summarizing the number of total brown rock crabs based on sex 
+antennarium_sex <- antennarium %>% #start with the antennarium dataframe
+  group_by(simple_sex) %>% #group the individuals based on sex 
+  reframe(total_sex = n()) %>% #calculate the number of individuals by sex
+  pivot_longer(cols = total_sex, #pivot longer so that we have a column for sex and count 
+               values_to = "count") %>% #have the number of individuals per sex under the column "count"
+  select(simple_sex, count) #only keep the necessary columns
+
+#save the number of female brown rock crabs 
+female_antennarium <- antennarium_sex %>% #start with the antennarium_sex dataframe
+  filter(simple_sex == "F") %>% #only keep the female individuals 
+  pull(count) #extract the value from the count column
+
+#save the number of male brown rock crabs 
+male_antennarium <- antennarium_sex %>% #start with the antennarium_sex dataframe
+  filter(simple_sex == "M") %>% #only keep the male individuals 
+  pull(count) #extract the value from the count column
+
+#create a dataframe summarizing the number of infested brown rock crabs based on sex 
+antennarium_summary <- antennarium %>% #start with the antennarium dataframe 
+  group_by(simple_sex, nico_present) %>% #group the individuals based on sex and nicothoid prevalence (yes/no)
+  reframe(total_infested = n()) %>% #calculate the number of infested individuals 
+  pivot_longer(cols = total_infested, #pivot longer so that we have a column for sex, nicothoid prevalence (yes/no), and count 
+               values_to = "total_infested") %>% #have the number of individuals per class under the column "count"
+  mutate(prevalence_infested = case_when(simple_sex == "F" ~ round((total_infested/female_antennarium)*100, 2), #divide the count by the total number of females
+                                         simple_sex == "M" ~ round((total_infested/male_antennarium)*100, 2))) %>% #divide the count by the total number of males
+  mutate(total_individuals = case_when(simple_sex == "F" ~ female_antennarium, #insert the total number of females
+                                       simple_sex == "M" ~ male_antennarium)) %>%  #insert the total number of males 
+  filter(nico_present == "yes") %>% #only keep the rows for the infested counts
+  select(simple_sex, total_infested, total_individuals, prevalence_infested) #only keep the necessary columns 
+
+
+```
+
+
+### ii) Prevalence Infected Egg Masses
+
+```{r}
+#create a dataframe with the gravid brown rock crabs 
+gravid_antennarium <- antennarium %>% #start with the antennarium dataframe
+  filter(sex == "F") %>% #select only the sexually mature females 
+  filter(ever_gravid == "Y") %>%  #select only the gravid females
+  reframe(total_gravid = n()) %>% #calculate the total number of gravid females
+  pull(total_gravid) #extract the value from the total_gravid column
+
+#create a dataframe with the with an overview of the prevalence of infested egg masses from gravid brown rock crabs
+antennarium_egg_mass <- antennarium %>% #start with the antennarium dataframe 
+  filter(sex == "F") %>% #select only the sexually mature females 
+  group_by(nico_location) %>% #group the individuals based on the location of where the nicothoids were found
+  reframe(total_infested = n()) %>% #calculate the number of individuals which had infested egg masses, gills, or both
+  mutate(eggs_infested = case_when(nico_location == "egg_mass" ~ "yes", #when nico location is egg mass then nicos are found in the eggs "yes"
+                                   nico_location == "both" ~ "yes", #when nico location is both then nicos are found in the eggs "yes"
+                                   nico_location == "neither" ~ "no", #when nico location is neither then nicos are NOT found in the eggs "no"
+                                   nico_location == "NA" ~ "no", #when nico location is NA then nicos are NOT found in the eggs "no"
+                                   nico_location == "gills" ~ "no")) %>% #when nico location is fills then nicos are NOT found in the eggs "no"
+  select(eggs_infested, total_infested) %>% #only keep the necessary columns
+  group_by(eggs_infested) %>% #group the individuals based on whether or not the individuals are infested ("yes") or not ("no")
+  reframe(total_infested_eggs = sum(total_infested)) %>% #calculate the number of individuals which are infested 
+  mutate(total_individuals = gravid_anthonyi) %>% #create a column with the total number of gravid individuals 
+  mutate(prevalence_infested = round((total_infested_eggs/total_individuals)*100, 2)) %>% #calculate the prevalence of infested egg masses out of all gravid female brown rock crabs 
+  filter(eggs_infested == "yes") %>% #only keep the rows for the infested counts
+  select(eggs_infested, total_infested_eggs, total_individuals, prevalence_infested) #only keep the necessary columns 
+
+```
+
+
+# IV. Egg Mass Summaries
+
+## a) Density of Nicothoids per Sample of Host Eggs
+
+```{r}
+#create a dataframe with the densities of nicothoid adults, larvae, and nicothoid eggs within the crab egg mass
+egg_mass_densities <- egg_mass %>% #start with the egg_mass dataframe
+  mutate(total_nicos = adult_nicos + larval_nicos) %>% #calculate the total number of nicothoids of all life stages in the sample 
+  mutate(den_total_sample = total_nicos/crab_eggs) %>% #calculate the density of the total nicothoids found in the sample of crab eggs - total nicothoids per crab egg 
+  mutate(den_adults_sample = adult_nicos/crab_eggs) %>% #calculate the density of the adult nicothoids found in the sample of crab eggs - adult nicothoids per crab egg
+  mutate(den_larvae_sample = larval_nicos/crab_eggs) %>% #calculate the density of the larval nicothoids found in the sample of crab eggs - larval nicothoid per crab egg
+  mutate(den_nico_eggs_sample = nico_eggs/crab_eggs) %>% #calculate the density of the nicothoids eggs found in the sample of crab eggs - nicothoid eggs per crab egg 
+  mutate(group = case_when(day %in% 1:3 ~ "1", #group days 1-3 into group 1
+                           day %in% 4:6 ~ "2", #group days 4-6 into group 2
+                           day %in% 7:9 ~ "3", #group days 7-9 into group 3
+                           day %in% 10:12 ~ "4", #group days 10-12 into group 4
+                           day %in% 13:15 ~ "5", #group days 13-15 into group 5
+                           day %in% 16:18 ~ "6", #group days 15-18 into group 6
+                           day %in% 19:21 ~ "7", #group days 19-21 into group 7
+                           day %in% 22:24 ~ "8", #group days 22-24 into group 8
+                           day %in% 25:27 ~ "9", #group days 25-27 into group 9
+                           day %in% 28:30 ~ "10", #group days 28-30 into group 10
+                           day %in% 31:33 ~ "11", #group days 31-33 into group 11
+                           day %in% 34:36 ~ "12", #group days 34-36 into group 12
+                           day %in% 37:39 ~ "13", #group days 37-39 into group 13
+                           day %in% 40:42 ~ "14", #group days 40-42 into group 14
+                           day %in% 43:45 ~ "15")) #group days 43-45 into group 15
+
+```
+
+
+## b) Densities of Nicothoids
+
+```{r}
+#create a dataframe with the average density of adult nicothoids from a sample of crab eggs per group of three days
+avg_egg_mass_densities <- egg_mass_densities %>%  #start with the egg_mass_densities dataframe
+  group_by(group) %>% #group the samples based on the group they were assigned to in the prior step
+  reframe(avg_den_adults_sample = mean(den_adults_sample), #for each group of days, calculate the mean density of adults per sample - adult nicothoids per crab egg per group of days 
+          avg_den_larvae_sample = mean(den_larvae_sample), #for each group of days, calculate the mean density of larvae per sample - larval nicothoids per crab egg per group of days 
+          avg_den_nico_eggs_sample = mean(den_nico_eggs_sample), #for each group of days, calculate the mean density of adults per sample - nicothoids eggs per crab egg per group of days 
+          avg_day_sample = mean(day)) #for each group of days, calculate the average day per sample 
+
+```
+
+
+## c) Nicothoid Densities Scaled 
+
+### i) Intensity per One Million Host Eggs
+
+```{r}
+#create a dataframe scaling the densities to 1000000 eggs instead of per one host egg
+nico_counts_mil <- egg_mass_densities %>% #start with the egg_mass_densities dataframe
+  mutate(den_adults_mil = den_adults_sample*1000000) %>%  #scale the density of adults per crab egg to 1000000 crab eggs (the average amount in a sample of host eggs) - adult nicothoids per 1000000 crab eggs 
+  mutate(den_larvae_mil = den_larvae_sample*1000000) %>%  #scale the density of larvae per crab egg to 1000000 crab eggs (the average amount in a sample of host eggs) - larval nicothoids per 1000000 crab eggs 
+  mutate(den_nico_eggs_mil = den_nico_eggs_sample*1000000)  #scale the density of nicothoid eggs per crab egg to 1000000 crab eggs (the average amount in a sample of host eggs) - nicothoids eggs per 1000000 crab eggs 
+
+```
+
+
+### ii) Density per One Million Host Eggs
+
+```{r}
+#create a dataframe scaling the densities to 1000000 eggs instead of per one host egg
+nico_density_mil <- avg_egg_mass_densities %>% #start with the avg_egg_mass_densities dataframe
+  mutate(avg_den_adults_mil = avg_den_adults_sample*1000000) %>%  #scale the mean density of adults per crab egg to 1000000 crab eggs (the average amount in a sample of host eggs) - adult nicothoids per 1000000 crab eggs per group of days 
+  mutate(avg_den_larvae_mil = avg_den_larvae_sample*1000000) %>%  #scale the mean density of larvae per crab egg to 1000000 crab eggs (the average amount in a sample of host eggs) - larval nicothoids per 1000000 crab eggs per group of days 
+  mutate(avg_den_nico_eggs_mil = avg_den_nico_eggs_sample*1000000)  #scale the mean density of nicothoid eggs per crab egg to 1000000 crab eggs (the average amount in a sample of host eggs) - nicothoids eggs per 1000000 crab eggs per group of days 
+
+```
+
+
+# V. Publication Figures
+
+## a) Table S2
+
+
+## b) Figure S1
+
+### i) Create sf Objects
+
+```{r}
+#load a map of the world countries from the rnaturalearth package as a sf object
+countries <- st_as_sf(ne_countries(scale = "medium"), #load in the world countries at a medium resolution 
+                      crs = 4326) #EPSG:4326 is the coordinate reference system for WGS84
+
+#convert the locations dataframe to an sf object
+locations_sf <- st_as_sf(locations, #start with the locations dataframe
+                         coords = c("longitude", "latitude"), #use long and lat
+                         crs = 4326) %>%  #EPSG:4326 is the coordinate reference system for WGS84
+  mutate(location_id = seq_len(nrow(locations))) %>% #add a column with a unique id for each row
+  mutate(label_location = ifelse(species %in% c("Ch. cancrorum", "Ch. indica"), "right", "left")) %>%  #generate a column which assigns the Ch. cancrorum and Ch. indica species to the right label and the Ch. maenadis and the "Ch. sp." to the left label (indicating which side of the point the number will show up on the map)
+  rename(Species = species) #rename the species column to Species
+
+#create a dataframe with just the countries with choniosphaera species present
+ch_countries <- countries %>% #start with the countries dataframe
+   st_filter(., locations_sf, .predicate = sf::st_intersects) #only keep countries that intersect locations with Choniosphaera species present in the locations_sf dataframe
+
+
+```
+
+
+### ii) Location Labels
+
+```{r}
+#create a dataframe with the labels to be displayed on the left side of the point
+labels_left <- locations_sf %>% #start with the locations_sf dataframe
+  filter(label_location == "left") %>% #select the locations with the label_location "left"
+  mutate(location_id = case_when(location_id == 5 ~ "5", #when the location_id is 5 keep it as 5
+                                 location_id == 6 ~ "6", #when the location_id is 6 keep it as 6
+                                 location_id == 10 ~ "10-12")) %>%   #when the location_id is 10 change it to 10-12 
+  filter(!is.na(location_id)) #remove the location_id's that are not used (remove location_id 11 and 12 since that is included with location_id 10)
+
+#create a dataframe with the labels to be displayed on the right side of the point
+labels_right <- locations_sf %>% 
+  filter(label_location == "right") %>% 
+  mutate(location_id = case_when(location_id == 1 ~ "1-3",#when the location_id is 1 change it to 1-3
+                                 location_id == 7 ~ "7", #when the location_id is 7 keep it as 7
+                                 location_id == 8 ~ "8", #when the location_id is 8 keep it as 8
+                                 location_id == 9 ~ "9")) %>% #when the location_id is 9 keep it as 9
+  filter(!is.na(location_id)) #remove the location_id's that are not used (remove location_id 2 and 3 since that is included with location_id 1)
+
+#create a dataframe with the labels to be displayed on the right side of the point
+labels_special <- locations_sf %>% 
+  filter(location_id %in% c(4, 13)) 
+
+```
+
+
+### iii) First Documentation References
+
+```{r}
+#create a vector with the label information for the first third (labels 1-3, 4, and 5) of the location_id labels
+legend_info1 <- locations %>% #start with the locations dataframe
+  mutate(location_id = seq_len(nrow(locations))) %>%  #add a column with a unique id for each row
+  mutate(location_id = case_when(location_id %in% 1:3 ~ "1-3", #when the location_id is 1, 2, or 3 change it to 1-3
+                                 location_id == 4 ~ "4", #when the location_id is 4 keep it as 4
+                                 location_id == 5 ~ "5")) %>% #when the location_id is 5 keep it as 5
+  filter(location_id %in% c("1-3", "4", "5")) %>% #only keep the necessary columns
+  distinct(location_id, paper) %>% #for each distinct location_id and paper name create a new label
+  mutate(label = paste0(location_id, ": ", paper)) %>% #create a new column with the location_id: paper 
+  pull(label) #extract the label column as a vector
+
+#create a vector with the label information for the middle third (labels 6, 7, and 8) of the location_id labels
+legend_info2 <- locations %>% #start with the locations dataframe
+  mutate(location_id = seq_len(nrow(locations))) %>%  #add a column with a unique id for each row
+  mutate(location_id = case_when(location_id == 6 ~ "6", #when the location_id is 6 keep it as 6
+                                 location_id == 7 ~ "7", #when the location_id is 7 keep it as 7
+                                 location_id == 8 ~ "8")) %>% #when the location_id is 8 keep it as 8
+  filter(location_id %in% c("6", "7","8")) %>% #only keep the necessary columns
+  distinct(location_id, paper) %>% #for each distinct location_id and paper name create a new label
+  mutate(label = paste0(location_id, ": ", paper)) %>% #create a new column with the location_id: paper 
+  pull(label) #extract the label column as a vector
+
+#create a vector with the label information for the last third (labels 9, 10-12, and 13) of the location_id labels
+legend_info3 <- locations %>% #start with the locations dataframe
+  mutate(location_id = seq_len(nrow(locations))) %>%  #add a column with a unique id for each row
+  mutate(location_id = case_when(location_id == 9 ~ "9", #when the location_id is 9 keep it as 9
+                                  location_id %in% 10:12 ~ "10-12", #when the location_id is 10, 11, or 12 change it to 10-12
+                                  location_id == 13 ~ "13")) %>% #when the location_id is 13 keep it as 13
+  filter(location_id %in% c("9", "10-12", "13")) %>% #only keep the necessary columns
+  distinct(location_id, paper) %>% #for each distinct location_id and paper name create a new label
+  mutate(label = paste0(location_id, ": ", paper)) %>% #create a new column with the location_id: paper 
+  pull(label) #extract the label column as a vector
+
+#combine the label for each locaiton_id into a single string for annotation (1/3)
+legend_text1 <- paste(legend_info1, #start with the legend_info1 dataframe
+                      collapse = "\n") #place each label item on its own line 
+
+#combine the label for each locaiton_id into a single string for annotation (2/3)
+legend_text2 <- paste(legend_info2, #start with the legend_info2 dataframe
+                      collapse = "\n") #place each label item on its own line 
+
+#combine the label for each locaiton_id into a single string for annotation (3/3)
+legend_text3 <- paste(legend_info3, #start with the legend_info3 dataframe
+                      collapse = "\n") #place each label item on its own line 
+
+```
+
+
+
+
+### iv) Final Map
+
+```{r}
+#create a map with the locations that species of the genus Choniosphaera have been identified
+locations_map <- tm_shape(countries) + #start with the countries dataframe
+  tm_borders(lwd = 0.5) + #plot the borders for all the countries of the world
+  tm_shape(ch_countries) + #add the countries with the Choniosphaera species
+  tm_fill(col = "#D9E4DC") + #fill these countries in for easier identification
+  tm_borders(lwd = 0.5) + #plot the borders for these countries as well 
+  tm_shape(labels_special) + #add the special labels
+  tm_text("location_id", #use the location_id number for identification
+          size = 0.7, 
+          ymod = -0.4,
+          just = "center",
+          bg.color = "white") +
+  tm_shape(labels_left) + #add the left labels 
+  tm_text("location_id", #use the location_id number for identification
+          size = 0.7, 
+          just = "right", 
+          xmod = -0.2,
+          ymod = 0.1,
+          bg.color = "white") +
+  tm_shape(labels_right) + #add the right labels
+  tm_text("location_id", #use the location_id number for identification
+          size = 0.7, 
+          xmod = 0.2,
+          ymod = -0.15,
+          just = "left",
+          bg.color = "white") +
+  tm_shape(locations_sf) + #add the locations where the Choniosphaera species were identified as point
+  tm_dots(col = "Species", #color the points by species
+          size = 0.05, 
+          palette = choniosphaera_palette) + #use the pre-determined choniosphaera color palette
+  tm_layout(fontfamily = "Times New Roman", #use Times New Romans as the font
+            main.title = expression("Distribution of Species in the Genus "*italic("Choniosphaera")),
+            main.title.position = "center",
+            main.title.size = 1.5, 
+            main.title.fontface = "bold",       
+            legend.position = c(0.02 ,0.02), #add a legend for the choniosphaera species and colors
+            legend.title.fontface = "bold",
+            legend.text.fontface = "italic",
+            legend.text.size = 0.7, 
+            legend.title.size = 1,
+            legend.frame = TRUE,
+            legend.frame.lwd = 1,
+            frame.lwd = 2) +
+  tm_credits("First Documentation", #add a title for the references 
+             position = c(0.195, 0.175),
+             just = "left",
+             size = 0.8,
+             fontfamily = "Times New Roman",
+             fontface = "bold",
+             bg.color = "white") +
+  tm_credits(legend_text1, #add the first column of references 
+             position = c(0.2, 0.02),
+             just = "left",
+             size = 0.7,
+             fontfamily = "Times New Roman",
+             bg.color = "white") +
+  tm_credits(legend_text2, #add the second column of references
+             position = c(0.4, 0.02),
+             just = "left",
+             size = 0.7,
+             fontfamily = "Times New Roman",
+             bg.color = "white") +
+  tm_credits(legend_text3, #add the third column of references
+             position = c(0.57, 0.02),
+             just = "left",
+             size = 0.7,
+             fontfamily = "Times New Roman",
+             bg.color = "white")
+
+#print the map generated above 
+locations_map
+
+```
+
+## c) Figure S2
+
+### i) Intensity of Adult Nicothoid Infestation
+
+```{r}
+#create a plot of the intensity of the adult nico infestations 
+adult_intensity <- ggplot() +
+  geom_point(data = nico_counts_mil, #use the nico_counts_mil to show the data from each sample
+             aes(x = day, y = den_adults_mil, color = "adults"), #use the adults color from the nico_palette
+             size = 1.2, show.legend = FALSE) + #don't include a legend
+  geom_line(data = nico_density_mil, #use the nico_density_mil to show the data averaged from sample across three days in the developmental period
+            aes(x = avg_day_sample, y = avg_den_adults_mil, color = "black"), #plot the trend for the average
+            size = 1, show.legend = FALSE) + #don't include a legend
+  scale_color_manual(values = nico_palette) +  #use the nico_palette
+  scale_x_continuous(#name = "Development Day", #x-axis title
+                     breaks = seq(0, max(nico_counts_mil$day), by = 2)) + #determine the number of breaks for the x-axis 
+  scale_y_continuous(labels = function(y) format(y, scientific = TRUE)) + #format the y-axis labels in scientific notation
+  #labs(title = "Intensity of Adult Nicothoid Infestation", #title the plot
+       #y = "Intensity of Adult Nicothoids") +  #y-axis title
+  labs(x = NULL, y = NULL) +
+  theme_classic() +
+  theme(text = element_text(family = "Times New Roman"),
+        #plot.title = element_text(size = 16, #size for title font
+                                  #hjust = 0.5), #center the title
+        axis.title = element_text(face = "bold", #bold the axis title 
+                                  size = 14), #size for the axis title fonts
+        axis.text = element_text(size = 10))  #size for the axis text 
+
+adult_intensity
+
+```
+
+
+### ii) Intensity of Larval Nicothoid Infestation
+
+```{r}
+#create a plot of the intensity of the larval nico infestations 
+larval_intensity <- ggplot() +
+  geom_point(data = nico_counts_mil, #use the nico_counts_mil to show the data from each sample
+             aes(x = day, y = den_larvae_mil, color = "larvae"), #use the larvae color from the nico_palette
+             size = 1.2, show.legend = FALSE) + #don't include a legend
+  geom_line(data = nico_density_mil, #use the nico_density_mil to show the data averaged from sample across three days in the developmental period
+            aes(x = avg_day_sample, y = avg_den_larvae_mil, color = "black"), #plot the trend for the average
+            size = 1, show.legend = FALSE) + #don't include a legend
+  scale_color_manual(values = nico_palette) +  #use the nico_palette
+  scale_x_continuous(#name = "Development Day", #x-axis title
+                     breaks = seq(0, max(nico_counts_mil$day), by = 2)) + #determine the number of breaks for the x-axis 
+  scale_y_continuous(labels = function(y) format(y, scientific = TRUE)) + #format the y-axis labels in scientific notation
+  #labs(title = "Intensity of Larval Nicothoid Infestation", #title the plot
+       #y = "Intensity of Larval Nicothoids") +  #y-axis title 
+  labs(x = NULL, y = NULL) +
+  theme_classic() +
+  theme(text = element_text(family = "Times New Roman"),
+        #plot.title = element_text(size = 16, #size for title font
+                                  #hjust = 0.5), #center the title
+        axis.title = element_text(face = "bold", #bold the axis title 
+                                  size = 14), #size for the axis title fonts
+        axis.text = element_text(size = 10))  #size for the axis text 
+
+larval_intensity
+
+```
+
+
+### ii) Intensity of Nicothoid Egg Infestation
+
+```{r}
+#create a plot of the intensity of the nico egg infestations 
+nico_eggs_intensity <- ggplot() +
+  geom_point(data = nico_counts_mil, #use the nico_counts_mil to show the data from each sample
+             aes(x = day, y = den_nico_eggs_mil, color = "nico_eggs"), #use the nico_eggs color from the nico_palette
+             size = 1.2, show.legend = FALSE) + #don't include a legend
+  geom_line(data = nico_density_mil, #use the nico_density_mil to show the data averaged from sample across three days in the developmental period
+            aes(x = avg_day_sample, y = avg_den_nico_eggs_mil, color = "black"), #plot the trend for the average
+            size = 1, show.legend = FALSE) + #don't include a legend
+  scale_color_manual(values = nico_palette) +  #use the nico_palette
+  scale_x_continuous(#name = "Development Day", #x-axis title
+                     breaks = seq(0, max(nico_counts_mil$day), by = 2)) + #determine the number of breaks for the x-axis 
+  scale_y_continuous(labels = function(y) format(y, scientific = TRUE)) + #format the y-axis labels in scientific notation
+  #labs(title = "Intensity of Nicothoid Egg Infestation", #title the plot
+       #y = "Intensity of Nicothoid Eggs") +  #y-axis title
+  labs(x = NULL, y = NULL) +
+  theme_classic() +
+  theme(text = element_text(family = "Times New Roman"),
+        #plot.title = element_text(size = 16, #size for title font
+                                  #hjust = 0.5), #center the title
+        axis.title = element_text(face = "bold", #bold the axis title 
+                                  size = 14), #size for the axis title fonts
+        axis.text = element_text(size = 10))  #size for the axis text 
+  
+nico_eggs_intensity
+
+```
+
+
+### iv) Final Figure
+
+```{r}
+# Define colors for each stage
+legend_colors <- c("nico_eggs" = "#AF6E78", 
+                  "larvae" = "#F29F05",
+                  "adults" = "#D95204")
+
+# Dummy plot with mapped colors
+legend_plot <- ggplot(data.frame(x = 1:3, y = 1:3, group = c("adults", "larvae", "nico_eggs")),
+                      aes(x = x, y = y, color = group)) +
+  geom_point() +
+  scale_color_manual(values = legend_colors,
+                     name = "Life Stages",
+                     labels = c("Adult", "Larval", "Nicothoid Eggs")) +
+  theme_void() +
+  theme(legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.text = element_text(family = "Times New Roman", size = 12),
+        legend.title  = element_text(family = "Times New Roman", 
+                                     size = 12,
+                                     face = "bold"),
+        legend.key.size = unit(0.5, "cm"))
+
+legend_plot
+
+```
+
