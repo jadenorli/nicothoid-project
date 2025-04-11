@@ -619,6 +619,9 @@ locations_map <- tm_shape(countries) + #start with the countries dataframe
              fontfamily = "Times New Roman",
              bg.color = "white")
 
+#save the plot in the figures folder
+tmap_save(here("figures", "figure_s1.jpg"), tm = locations_map)
+
 #print the map generated above 
 locations_map
 
