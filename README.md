@@ -1,1 +1,420 @@
-# nicothoid-project
+Discovery of an unidentified species of nicothoid copepod infesting
+cancrid crabs in Santa Barbara, California
+================
+truetruetruetruetruetruetrue
+
+# Abstract
+
+A previously unobserved and potentially novel copepod egg predator
+(Nicothoidae cf. *Choniosphaera* sp.) was recently discovered in the egg
+masses and gills of three commercially important rock crab species
+(*Cancer anthonyi*, *C. antennarius*, and *C. productus*) along the
+Gaviota Coast of Southern California west of Santa Barbara. Nicothoid
+egg predators have never been observed in crabs along the Pacific coast
+of the Americas, despite extensive historical work on cancrid crab brood
+mortality caused by nemertean egg predators in the 1990s. This outbreak
+is a recent and possibly unique event. Female copepods appear highly
+modified, mimicking the coloration and globular shape of crab eggs. The
+copepods feed by puncturing a small hole in the shell of the crab egg,
+aborting the development of the embryo and subsequently facilitating
+entry of microbial agents. We document high copepod prevalence in
+ovigerous crabs along the Santa Barbara coast. Lack of fishery
+management coupled with the geographical extent and host specificity of
+this potential threat to rock crab populations warrants further
+investigation.
+
+# Methods
+
+See publication supplemental documentation (Appendix S1) for full
+methods.
+
+# File Structure
+
+``` bash
+      .
+      ├── .DS_Store
+      ├── .RData
+      ├── .Rhistory
+      ├── .gitignore
+      ├── README.md
+      ├── README.rmd
+      ├── code
+      │    ├── nicothoid_overview.html
+      │    └── nicothoid_overview.qmd
+      ├── figures
+      │    ├── .DS_Store
+      │    ├── figure_s1.jpg
+      │    ├── figure_s2_a.jpg
+      │    ├── figure_s2_b.jpg
+      │    └── figure_s2_c.jpg
+      ├── nicothoid-project.Rproj
+      ├── raw_data
+      │    ├── .DS_Store
+      │    ├── dissection_data.csv
+      │    ├── egg_mass_data.csv
+      │    ├── locations.csv
+      │    └── metadata.csv
+      └── structure.txt
+```
+
+# Data Descriptions
+
+## 1. metadata.csv
+
+- description: a CSV which contains the metadata collected for each
+  individual crab collected and monitored during the duration of this
+  study
+- format: csv
+- variables:
+  - **crab_id**: the unique identifcation tag given to each indvidual
+    crab and follows the structure below
+
+    1.  \*\*species (first three letters of species name)
+
+    - options include:
+      1)  Cancer anthonyi (Metacarcinus anthonyi): ANT
+      2)  Cancer productus: PRO
+      3)  Cancer antennarius (Romaleon antennarium): ATS
+
+    2.  location (first three letters of collection location)
+
+    - options include:
+      1)  Gaviota coast: GAV
+      2)  Unknown: UNK
+      3)  Alegria Beach: ALE
+      4)  Sripps: SIO
+      5)  Hendry’s Beach: HNE
+
+    3.  unique number (unique number starting with 001) \*\*for
+        individuals that are NOT sexually mature females (i.e. males or
+        immature females), the species name will be given a prefix of M
+        for males and IF for immature females
+
+    - examples:
+      1.  sexually mature female Metacarcinus anthonyi from the Gaviota
+          Coast: ANT-GAV-001
+      2.  sexually immature female Cancer productus from Alegria Beach:
+          IFPRO-ALE-001
+      3.  male Romaleon antennarium from Gaviota Scripps: MATS-SIO-001”
+
+  - **collection_date**: the date that the individual was collected from
+    the baited crab pot and brought into the lab for examination
+
+    - the date is formatted as MM/DD/YYYY
+
+  - **species**: the species of rock crab
+
+    - options include:
+      1.  Cancer anthonyi (Metacarcinus anthonyi): cancer_anthonyi
+      2.  Cancer productus: cancer_productus
+      3.  Cancer antennarius (Romaleon antennarium): cancer_antennarius
+
+  - **carapace_width**: the length of the carapce in mm - measured using
+    the standard practices outlined in The Light and Smith Manual by
+    James Carlton
+
+  - **abdomen_width**: the length of the abdomen in mm
+
+    - measured using the standard practices outlined in The Light and
+      Smith Manual by James Carlton  
+
+  - **sex**: the sex of the individual - options include:
+
+    1.  sexually mature female: F
+    2.  immature female: IF
+    3.  male: M
+
+  - **gravid**: the status of sexually mature females, either classified
+    as gravid (yes) or not gravid (no) - options include:
+
+    1.  yes: Y
+    2.  no: N
+    3.  not applicable (for immature females IF or males M): NA
+
+  - **eds**: the egg development stage (EDS) of the egg mass for gravid
+    sexually mature females as outlined in the supplemental material
+    (Appendix S1: Table S1) of the associated manuscript
+
+    - this is the EDS of the majority of the brood on the date of
+      collection
+
+  - **location**: the location of collection - options include:
+
+    1.  Gaviota coast: gaviota
+    2.  Unknown: unknown
+    3.  Alegria Beach: alegria
+    4.  Scripps: scripps
+    5.  Hendry’s Beach: hendrys
+
+  - **notes**: these are notes about the general appearance and the
+    prevalence of nicothoids upon initial examination
+
+  - **nico_date**: the date that nicothoids were first identified
+    infesting the individual - the date is formatted as MM/DD/YYYY
+
+  - **first_location**: the first location that nicothoids were found
+    infested the individual - options include:
+
+    1.  egg mass of gravid sexually mature females: eggs
+    2.  gill chamber: gills
+    3.  not applicable (nicothoids were not found): NA
+
+  - **dissected**: was the individual dissected, yes or no - options
+    include:
+
+    1.  yes
+    2.  no
+
+  - **nico_location**: the locations which nicothoids were found
+    infesting the individual - options include:
+
+    1.  ONLY the egg mass of gravid sexually mature females: egg_mass
+    2.  ONLY the gill chamber: gills
+    3.  BOTH the egg mass of gravid sexually mature females and the gill
+        chamber: both
+    4.  nicothoids were not found infesting the individual: neither
+    5.  not applicable (died before examination or insufficient search
+        effort): NA
+
+  - **ever_gravid**: was the sexually mature female ever gravid during
+    the duration of the observation, yes or no - options include:
+
+    1.  yes: Y
+    2.  no: N
+    3.  not applicable (for immature females IF or males M): NA
+
+  - **final_notes**: these are final notes recoreded about the
+    individual during the duration of the observation including if the
+    individual died before examination, if the individual molted, or
+    other notable features
+
+  - **analysis_status**: whether or not the individual should be
+    included in the analysis - options include:
+
+    1.  exclude from analysis (see final notes for justification):
+        exclude
+    2.  include in analysis (blank):
+
+## 2. dissection_data.csv
+
+- description: a CSV which contains the dissection data collected for
+  each individual dissection performed during the duration of this study
+- format: csv
+- variables:
+  - **dissection_id**: the unique identificaiton tag given to each
+    dissection and follows the structure below
+
+    1.  Dissection
+    2.  unique number (unique number starting with 001)
+
+    - example: the first dissection: Dissection-001
+
+  - **crab_id**: the unique identifcation tag given to each indvidual
+    crab and follows the structure below
+
+    1.  \*\*species (first three letters of species name)
+
+    - options include:
+      1)  Cancer anthonyi (Metacarcinus anthonyi): ANT
+      2)  Cancer productus: PRO
+      3)  Cancer antennarius (Romaleon antennarium): ATS
+
+    2.  location (first three letters of collection location)
+
+    - options include:
+      1)  Gaviota coast: GAV
+      2)  Unknown: UNK
+      3)  Alegria Beach: ALE
+      4)  Sripps: SIO
+      5)  Hendry’s Beach: HNE
+
+    3.  unique number (unique number starting with 001) \*\*for
+        individuals that are NOT sexually mature females (i.e. males or
+        immature females), the species name will be given a prefix of M
+        for males and IF for immature females
+
+    - examples:
+      1.  sexually mature female Metacarcinus anthonyi from the Gaviota
+          Coast: ANT-GAV-001
+      2.  sexually immature female Cancer productus from Alegria Beach:
+          IFPRO-ALE-001
+      3.  male Romaleon antennarium from Gaviota Scripps: MATS-SIO-001”
+
+  - **sex**: the sex of the individual
+
+    - options include:
+      1.  sexually mature female: F
+      2.  immature female: IF
+      3.  male: M
+
+  - **species**: the species of rock crab
+
+    - options include:
+      1.  Cancer anthonyi (Metacarcinus anthonyi): cancer_anthonyi
+      2.  Cancer productus: cancer_productus
+      3.  Cancer antennarius (Romaleon antennarium): cancer_antennarius
+
+  - **date**: the date of the dissection
+
+    - the date is formatted as MM/DD/YYYY
+
+  - **nico_count**: the total count of larval nicothoids (the only life
+    stage present in the gill chamber) found across the one gill removed
+    and examined from the host
+
+  - **number_lamellae**: the total count of lamallae found across the
+    one gill removed and examined from the host
+
+  - **notes**: these are general notes about the dissection and any
+    significant findings
+
+  - **analysis_status**: whether or not the individual should be
+    included in the analysis - options include:
+
+    1.  exclude from analysis (see final notes for justification):
+        exclude
+    2.  include in analysis (blank):
+
+## 3. egg_mass_data.csv
+
+- description: a CSV which contains the egg mass examination data
+  collected for each crab monitored during the duration of this study
+- format: csv
+- variables:
+  - **trial_id**: the unique identification tag given to each egg mass
+    examination - egg mass examinations occurred during two
+    investigations studying autoinfection and egg mass moratlity;
+    therefore the naming follows the structure below
+
+    1.  investigation name
+
+    - options include:
+      1)  Autoinfection
+      2)  Mortality
+
+    2.  unique number (unique number starting with 001 for each
+        investigation)
+
+    - examples:
+      1.  first autoinfection investigation: Autoinfection-001
+      2.  first egg mass mortality investigation: Mortality-001
+
+  - **crab_id**: the unique identifcation tag given to each indvidual
+    crab and follows the structure below
+
+    1.  \*\*species (first three letters of species name)
+
+    - options include:
+      1)  Cancer anthonyi (Metacarcinus anthonyi): ANT
+      2)  Cancer productus: PRO
+      3)  Cancer antennarius (Romaleon antennarium): ATS
+
+    2.  location (first three letters of collection location)
+
+    - options include:
+      1)  Gaviota coast: GAV
+      2)  Unknown: UNK
+      3)  Alegria Beach: ALE
+      4)  Sripps: SIO
+      5)  Hendry’s Beach: HNE
+
+    3.  unique number (unique number starting with 001) \*\*for
+        individuals that are NOT sexually mature females (i.e. males or
+        immature females), the species name will be given a prefix of M
+        for males and IF for immature females
+
+    - examples:
+      1.  sexually mature female Metacarcinus anthonyi from the Gaviota
+          Coast: ANT-GAV-001
+      2.  sexually immature female Cancer productus from Alegria Beach:
+          IFPRO-ALE-001
+      3.  male Romaleon antennarium from Gaviota Scripps: MATS-SIO-001”
+
+  - **date**: the date of the examination
+
+    - the date is formatted as MM/DD/YYYY
+
+  - **eds**: the egg development stage (EDS) of the egg mass for gravid
+    sexually mature females as outlined in the supplemental material
+    (Appendix S1: Table S1) of the associated manuscript
+
+    - this is the EDS of the majority of the brood on the date of
+      examination
+
+  - **day**: the day in the developmental period of the host egg mass
+    that corresponds to the date of the examination
+
+    - this is extrapolated based on known developmental periods for each
+      species and the timeline of examinations and corresponding egg
+      development stages (eds) records
+
+  - **pleopod_number**: the numerical location of the pleopod from which
+    the sample that was examined was removed prior to investigation
+
+    - the pleopods are numbered 1- 8 starting with the left posterior
+      pleopod from the ventral view as number 1 and moving in a
+      counterclockwise fashion increasing through the final pleopod,
+      number 8
+
+  - **crab_eggs**: the total number of crab eggs counted in the smaple
+    during the examination
+
+  - **adult_nicos**: the total number of adult nicothoid copepods
+    counted in the sample during the examination
+
+  - **larval_nicos**: the total number of larval nicothoid copepods
+    counted in the sample during the examination
+
+  - **nico_eggs**: the total number of nicothoid copepod eggs counted in
+    the sample during the examination
+
+  - **nemerteans**: the total number of nemertean worms counted in the
+    sample during the examination
+
+## 4. locations.csv
+
+- description: a CSV which contains the egg mass examination data
+  collected for each crab monitored during the duration of this study
+- format: csv
+- variables:
+  - **family**: the family of the copepod egg predator, nicothoidae
+
+  - **genus**: the genus of the copepod egg predator, choniosphaera
+
+  - **species**: the species of the copepod egg predator
+
+    - options include:
+      1.  Ch. cancrorum
+      2.  Ch. maenadis
+      3.  Ch. indica
+      4.  Ch. sp.
+
+  - **host_species**: the Latin name of the host species which was
+    infested by the egg predator copepod
+
+  - **region**: the country where the species of copepod egg predator
+    was found
+
+  - **subregion**: the subregion of the country where the species of
+    copepod egg predator was found
+
+  - **location**: the most precise location, a body of water, where the
+    species of copepod egg predator was found
+
+  - **longitude**: the longitude for the most precise location for the
+    copepod egg predator
+
+  - **latitude**: the latitude for the most precise location for the
+    copepod egg predator
+
+  - **year**: the year of the discovery of this copepod egg predator on
+    this particular host species
+
+  - **author**: the author of the corresponding paper
+
+  - **host_group**: the group of the host species, brachyura
+
+  - **host_order**: the order of the host species, decapoda
+
+  - **paper**: the paper corresponding to the first recording of this
+    particular copepod egg predator on the various host species \`\`\`
