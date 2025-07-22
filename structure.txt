@@ -1,26 +1,24 @@
 .
-├── .DS_Store
-├── .RData
-├── .Rhistory
-├── .gitignore
-├── README.md
-├── README.rmd
 ├── code
 │   ├── nicothoid_overview.html
 │   └── nicothoid_overview.qmd
 ├── figures
-│   ├── .DS_Store
-│   ├── figure_s1.jpg
+│   ├── figure_s1_ca.jpg
+│   ├── figure_s1_europe.jpg
+│   ├── figure_s1_full.jpg
+│   ├── figure_s1_ne.jpg
 │   ├── figure_s2_a.jpg
 │   ├── figure_s2_b.jpg
 │   └── figure_s2_c.jpg
 ├── nicothoid-project.Rproj
 ├── raw_data
-│   ├── .DS_Store
 │   ├── dissection_data.csv
 │   ├── egg_mass_data.csv
 │   ├── locations.csv
 │   └── metadata.csv
+├── README.html
+├── README.md
+├── README.rmd
 └── structure.txt
 
-4 directories, 20 files
+4 directories, 18 files

@@ -36,11 +36,10 @@ require(readr)
 require(ggplot2)
 require(sf)
 require(rnaturalearth)
+require(rnaturalearthhires)
 require(tmap)
 require(calecopal)
-require(patchwork)
 require(stringr)
-require(cowplot)
 
 ```
 
@@ -52,8 +51,8 @@ require(cowplot)
 ```{r}
 #read in the metadata and tidy it up 
 metadata <- read.csv(here("raw_data", "metadata.csv")) %>% #read in the csv
-  clean_names() %>% #clean names into tidy notation
-  filter(analysis_status != "exclude") %>% #remove the rows that were noted to be excluded (look at notes for reasoning)
+  clean_names() %>% #clean names into tidy notation 
+  filter(analysis_status == "include") %>% #remove the rows that were noted to be excluded (look at notes for reasoning)
   filter(!grepl("post molt", crab_id, ignore.case = TRUE)) %>% #remove the row for ATS-GAV-003 post molt 
   mutate(nico_present = case_when(nico_location %in% c("egg_mass", "gills", "both") ~ "yes", #when the nico location was egg mass, gills, or both than nicos are present "yes"
                                   nico_location == "neither" ~ "no")) %>% #when the nico location is neither than nicos are not present "no"
@@ -95,7 +94,8 @@ dissection <- read_csv(here("raw_data", "dissection_data.csv")) %>% #read in the
 ```{r}
 #read in the data with the locations of the choniosphaera species and tidy it up
 locations <- read_csv(here("raw_data", "locations.csv")) %>%  #read in the csv
-  clean_names() #clean names into tidy notation 
+  clean_names() %>%  #clean names into tidy notation 
+  filter(species != "Ch. indica")
   
 ```
 
@@ -104,37 +104,71 @@ locations <- read_csv(here("raw_data", "locations.csv")) %>%  #read in the csv
 ### i) Choniosphaera Species 
 
 ```{r}
-#generate a palette from the calecopal fire color palette
-fire_palette <- cal_palette(name = "fire")
+#generate a palette from the calecopal kelp1 color palette
+kelp1_palette <- cal_palette(name = "kelp1")
 
-#generate a palette from the calecopal gayophytum color palette
-gayophytum_palette <- cal_palette(name = "gayophytum")
+#generate a palette from the calecopal superbloom3 color palette
+superbloom3_palette <- cal_palette(name = "superbloom3")
 
-#create a vector of selected hex codes from the fire_palette and gayophytum_palette
-choniosphaera_palette <- c("Ch. cancrorum" = "#E60505",
-                           "Ch. maenadis" = "#4A5438",
-                           "Ch. indica" = "#C2607F", 
-                           "Ch. sp." = "#F66C09",
-                           "country_color" = "#D9E4DC")
+#create a vector of selected hex codes from the kelp1_palette and superbloom3_palette
+choniosphaera_palette <- c("Ch. cancrorum" = "#FFBF00",
+                           "Ch. maenadis" = "#D3105C",
+                           "Ch. sp." = "#F66C09")
 
 ```
 
 
-### ii) Nicothoid Life Stages
+### iii) Host Egg Development Stages
 
 ```{r}
-#generate a palette from the calecopal superbloom1 color palette
-superbloom1_palette <- cal_palette(name = "superbloom1")
+#generate a palette from the calecopal fire color palette
+full_fire_palette <- cal_palette(name = "fire", n = 100, type = "continuous")
 
-#generate a palette from the calecopal calochortus color palette
-calochortus_palette <- cal_palette(name = "calochortus")
+#create a vector of selected hex codes from the fire_palette 
+eds_palette <- c("A" = "#B77B7B",  
+                 "B" = "#C5916F",
+                 "C" = "#D6AD62",
+                 "D" = "#E2BF59",
+                 "E" = "#EDD150",
+                 "F" = "#FBC130",
+                 "G" = "#F88D18",
+                 "H" = "#F56508",
+                 "I" = "#EE3C07",
+                 "J" = "#B30B0C",
+                 "K" = "#771215",
+                 "L" = "#4A171C",
+                 "M" = "#2C1B21")
 
-#create a vector of selected hex codes from the superbloom1_palette and calochortus_palette
-nico_palette <- c("nico_eggs" = "#AF6E78",  
-                  "larvae" = "#F29F05",
-                  "adults" = "#D95204",
-                  "total_nicos" = "#A62F03",
-                  "average" = "black")
+#create a tribble with the eds and duration 
+eds_duration <- tribble(~eds, ~duration,
+                        "A", 4.1,
+                        "B", 3.7,
+                        "C", 1.7,
+                        "D", 2.6,
+                        "E", 11.9,
+                        "F", 2.0,
+                        "G", 2.3,
+                        "H", 1.7,
+                        "I", 6.9,
+                        "J", 2.0,
+                        "K", 2.1,
+                        "L", 1.5,
+                        "M", 0.8)
+
+#compute the xmin and xmax based on durations
+eds_bands <- eds_duration %>%
+  mutate(eds = factor(eds, levels = eds),
+         xmin = cumsum(lag(duration, default = 0)),
+         xmax = cumsum(duration) + if_else(eds == "M", 1, 0),
+         xmax = if_else(eds == "M", xmax + 1, xmax),
+         xmid = (xmin + xmax) / 2)
+
+#add the translucent colors from the eds_palette
+eds_bands <- eds_bands %>%
+  mutate(fill_color = alpha(eds_palette, 0.7))
+
+#define the minimum Y value
+ymin_val <- -1
 
 ```
 
@@ -447,22 +481,51 @@ nico_density_mil <- avg_egg_mass_densities %>% #start with the avg_egg_mass_dens
 ### i) Create sf Objects
 
 ```{r}
-#load a map of the world countries from the rnaturalearth package as a sf object
-countries <- st_as_sf(ne_countries(scale = "medium"), #load in the world countries at a medium resolution 
-                      crs = 4326) #EPSG:4326 is the coordinate reference system for WGS84
+#load the countries as sf object
+countries_all <- countries(exclude = "Antarctica",
+                           include = c("Alaska", "Greenland"))
+
+#load in just the Western Europe and Northern America countries
+countries <- countries(c("Western Europe", "Northern America"), part = TRUE, include = "Alaska")
+
+#load in all first-level administrative divisions for north america
+north_america <- ne_states(returnclass = "sf") %>% 
+  filter(iso_a2 %in% c("CA", "US"))
+
+#filter the north_america dataframe to just California
+california <- north_america %>% 
+  filter(name == "California")
+
+#filter the north_america dataframe to just the North East of the US and Canada
+ne <- north_america %>% 
+  filter(region %in% c("Eastern Canada", "Northeast"))
+
+#load in just the European countries
+europe <- countries("Europe",
+                    exclude = "Russia")
 
 #convert the locations dataframe to an sf object
 locations_sf <- st_as_sf(locations, #start with the locations dataframe
                          coords = c("longitude", "latitude"), #use long and lat
                          crs = 4326) %>%  #EPSG:4326 is the coordinate reference system for WGS84
   mutate(location_id = seq_len(nrow(locations))) %>% #add a column with a unique id for each row
-  mutate(label_location = ifelse(species %in% c("Ch. cancrorum", "Ch. indica"), "right", "left")) %>%  #generate a column which assigns the Ch. cancrorum and Ch. indica species to the right label and the Ch. maenadis and the "Ch. sp." to the left label (indicating which side of the point the number will show up on the map)
   rename(Species = species) #rename the species column to Species
 
 #create a dataframe with just the countries with choniosphaera species present
 ch_countries <- countries %>% #start with the countries dataframe
    st_filter(., locations_sf, .predicate = sf::st_intersects) #only keep countries that intersect locations with Choniosphaera species present in the locations_sf dataframe
 
+#create a dataframe with just the countries with choniosphaera species present in Europe
+ch_europe <- ch_countries %>% #start with the ch_countries dataframe
+   filter(country %in% c("France", "Germany")) #only keep countries in Europe
+
+#create a dataframe with just the states with choniosphaera species present
+ch_states <-  north_america %>% #start with the north_america dataframe
+   st_filter(., locations_sf, .predicate = sf::st_intersects) #only keep states/provinces that intersect locations with Choniosphaera species present in the locations_sf dataframe
+
+#create a dataframe with just the countries with choniosphaera species present in the North East of the US and Canada
+ch_ne <- ch_states %>% #start with the ch_states dataframe
+   filter(name %in% c("New Brunswick", "Maine")) #only keep states in the NE
 
 ```
 
@@ -471,25 +534,18 @@ ch_countries <- countries %>% #start with the countries dataframe
 
 ```{r}
 #create a dataframe with the labels to be displayed on the left side of the point
-labels_left <- locations_sf %>% #start with the locations_sf dataframe
-  filter(label_location == "left") %>% #select the locations with the label_location "left"
+europe_labels <- locations_sf %>% #start with the locations_sf dataframe
   mutate(location_id = case_when(location_id == 5 ~ "5", #when the location_id is 5 keep it as 5
-                                 location_id == 6 ~ "6", #when the location_id is 6 keep it as 6
-                                 location_id == 10 ~ "10-12")) %>%   #when the location_id is 10 change it to 10-12 
-  filter(!is.na(location_id)) #remove the location_id's that are not used (remove location_id 11 and 12 since that is included with location_id 10)
+                                 location_id == 6 ~ "6")) %>% #when the location_id is 6 keep it as 6 
+  filter(!is.na(location_id)) #remove the location_id's that are not used
 
 #create a dataframe with the labels to be displayed on the right side of the point
-labels_right <- locations_sf %>% 
-  filter(label_location == "right") %>% 
-  mutate(location_id = case_when(location_id == 1 ~ "1-3",#when the location_id is 1 change it to 1-3
-                                 location_id == 7 ~ "7", #when the location_id is 7 keep it as 7
-                                 location_id == 8 ~ "8", #when the location_id is 8 keep it as 8
-                                 location_id == 9 ~ "9")) %>% #when the location_id is 9 keep it as 9
-  filter(!is.na(location_id)) #remove the location_id's that are not used (remove location_id 2 and 3 since that is included with location_id 1)
-
-#create a dataframe with the labels to be displayed on the right side of the point
-labels_special <- locations_sf %>% 
-  filter(location_id %in% c(4, 13)) 
+us_labels <- locations_sf %>% 
+  mutate(location_id = case_when(location_id == 1 ~ "1-3", #when the location_id is 1 change it to 1-3
+                                 location_id == 4 ~ "4", #when the location_id is 4 keep it as 4
+                                 location_id == 7 ~ "7-9",
+                                 location_id == 10 ~ "10")) %>% 
+  filter(!is.na(location_id)) #remove the location_id's that are not used
 
 ```
 
@@ -497,35 +553,31 @@ labels_special <- locations_sf %>%
 ### iii) First Documentation References
 
 ```{r}
-#create a vector with the label information for the first third (labels 1-3, 4, and 5) of the location_id labels
+#create a vector with the label information for the first third (labels 1-3 and 4) of the location_id labels
 legend_info1 <- locations %>% #start with the locations dataframe
   mutate(location_id = seq_len(nrow(locations))) %>%  #add a column with a unique id for each row
   mutate(location_id = case_when(location_id %in% 1:3 ~ "1-3", #when the location_id is 1, 2, or 3 change it to 1-3
-                                 location_id == 4 ~ "4", #when the location_id is 4 keep it as 4
-                                 location_id == 5 ~ "5")) %>% #when the location_id is 5 keep it as 5
-  filter(location_id %in% c("1-3", "4", "5")) %>% #only keep the necessary columns
+                                 location_id == 4 ~ "4")) %>%  #when the location_id is 4 keep it as 4
+  filter(location_id %in% c("1-3", "4")) %>% #only keep the necessary columns
   distinct(location_id, paper) %>% #for each distinct location_id and paper name create a new label
   mutate(label = paste0(location_id, ": ", paper)) %>% #create a new column with the location_id: paper 
   pull(label) #extract the label column as a vector
 
-#create a vector with the label information for the middle third (labels 6, 7, and 8) of the location_id labels
+#create a vector with the label information for the middle third (labels 5 and 6) of the location_id labels
 legend_info2 <- locations %>% #start with the locations dataframe
   mutate(location_id = seq_len(nrow(locations))) %>%  #add a column with a unique id for each row
-  mutate(location_id = case_when(location_id == 6 ~ "6", #when the location_id is 6 keep it as 6
-                                 location_id == 7 ~ "7", #when the location_id is 7 keep it as 7
-                                 location_id == 8 ~ "8")) %>% #when the location_id is 8 keep it as 8
-  filter(location_id %in% c("6", "7","8")) %>% #only keep the necessary columns
+  mutate(location_id = case_when(location_id == 5 ~ "5", #when the location_id is 5 keep it as 6
+                                 location_id == 6 ~ "6")) %>%  #when the location_id is 6 keep it as 7
+  filter(location_id %in% c("5", "6")) %>% #only keep the necessary columns
   distinct(location_id, paper) %>% #for each distinct location_id and paper name create a new label
   mutate(label = paste0(location_id, ": ", paper)) %>% #create a new column with the location_id: paper 
   pull(label) #extract the label column as a vector
 
-#create a vector with the label information for the last third (labels 9, 10-12, and 13) of the location_id labels
+#create a vector with the label information for the last third (7-10) of the location_id labels
 legend_info3 <- locations %>% #start with the locations dataframe
   mutate(location_id = seq_len(nrow(locations))) %>%  #add a column with a unique id for each row
-  mutate(location_id = case_when(location_id == 9 ~ "9", #when the location_id is 9 keep it as 9
-                                  location_id %in% 10:12 ~ "10-12", #when the location_id is 10, 11, or 12 change it to 10-12
-                                  location_id == 13 ~ "13")) %>% #when the location_id is 13 keep it as 13
-  filter(location_id %in% c("9", "10-12", "13")) %>% #only keep the necessary columns
+  mutate(location_id = case_when(location_id %in% 7:10 ~ "7-10")) %>%  #when the location_id is 7, 8, 9, or 10 change it to 7-10
+  filter(location_id %in% c("7-10")) %>% #only keep the necessary columns
   distinct(location_id, paper) %>% #for each distinct location_id and paper name create a new label
   mutate(label = paste0(location_id, ": ", paper)) %>% #create a new column with the location_id: paper 
   pull(label) #extract the label column as a vector
@@ -545,120 +597,161 @@ legend_text3 <- paste(legend_info3, #start with the legend_info3 dataframe
 ```
 
 
+### iv) Final Maps
 
-
-### iv) Final Map
+#### 1. World Map
 
 ```{r}
 #create a map with the locations that species of the genus Choniosphaera have been identified
-locations_map <- tm_shape(countries) + #start with the countries dataframe
+locations_map <- tm_shape(countries_all) + #start with the countries dataframe
   tm_borders(lwd = 0.5) + #plot the borders for all the countries of the world
   tm_shape(ch_countries) + #add the countries with the Choniosphaera species
-  tm_fill(col = "#D9E4DC") + #fill these countries in for easier identification
-  tm_borders(lwd = 0.5) + #plot the borders for these countries as well 
-  tm_shape(labels_special) + #add the special labels
-  tm_text("location_id", #use the location_id number for identification
-          size = 0.7, 
-          ymod = -0.4,
-          just = "center",
-          bg.color = "white") +
-  tm_shape(labels_left) + #add the left labels 
-  tm_text("location_id", #use the location_id number for identification
-          size = 0.7, 
-          just = "right", 
-          xmod = -0.2,
-          ymod = 0.1,
-          bg.color = "white") +
-  tm_shape(labels_right) + #add the right labels
-  tm_text("location_id", #use the location_id number for identification
-          size = 0.7, 
-          xmod = 0.2,
-          ymod = -0.15,
-          just = "left",
-          bg.color = "white") +
-  tm_shape(locations_sf) + #add the locations where the Choniosphaera species were identified as point
-  tm_dots(col = "Species", #color the points by species
-          size = 0.05, 
-          palette = choniosphaera_palette) + #use the pre-determined choniosphaera color palette
-  tm_layout(fontfamily = "Times New Roman", #use Times New Romans as the font
-            main.title = expression("Distribution of Species in the Genus "*italic("Choniosphaera")),
-            main.title.position = "center",
-            main.title.size = 1.5, 
-            main.title.fontface = "bold",       
-            legend.position = c(0.02 ,0.02), #add a legend for the choniosphaera species and colors
-            legend.title.fontface = "bold",
-            legend.text.fontface = "italic",
-            legend.text.size = 0.7, 
-            legend.title.size = 1,
-            legend.frame = TRUE,
-            legend.frame.lwd = 1,
-            frame.lwd = 2) +
-  tm_credits("First Documentation", #add a title for the references 
-             position = c(0.195, 0.175),
-             just = "left",
-             size = 0.8,
-             fontfamily = "Times New Roman",
-             fontface = "bold",
-             bg.color = "white") +
-  tm_credits(legend_text1, #add the first column of references 
-             position = c(0.2, 0.02),
-             just = "left",
-             size = 0.7,
-             fontfamily = "Times New Roman",
-             bg.color = "white") +
-  tm_credits(legend_text2, #add the second column of references
-             position = c(0.4, 0.02),
-             just = "left",
-             size = 0.7,
-             fontfamily = "Times New Roman",
-             bg.color = "white") +
-  tm_credits(legend_text3, #add the third column of references
-             position = c(0.57, 0.02),
-             just = "left",
-             size = 0.7,
-             fontfamily = "Times New Roman",
-             bg.color = "white")
-
+  tm_fill(col = "#A9BDB2") + #fill these countries in for easier identification
+  tm_borders(lwd = 0.5) + #plot the borders for these countries as well  
+  tm_shape(ch_states) + #add the states with the Choniosphaera species
+  tm_borders(lwd = 2) + #plot the borders for these states as well  
+  tm_shape(ch_europe) + #add the European countries with the Choniosphaera species
+  tm_borders(lwd = 2) + #plot the borders for these states as well  
+  tm_layout(frame = FALSE)
+  
 #save the plot in the figures folder
-tmap_save(here("figures", "figure_s1.jpg"), tm = locations_map)
+tmap_save(here("figures", "figure_s1_full.jpg"), tm = locations_map)
 
 #print the map generated above 
 locations_map
 
 ```
 
+
+#### 2. North American Northeast
+
+```{r}
+#create a map with the locations that species of the genus Choniosphaera have been identified in the North East of the US and Canada
+ne_map <- tm_shape(ch_ne) + #start with the countries with the Choniosphaera species
+  tm_fill(col = "#A9BDB2", alpha = 0.7) + #fill these countries in for easier identification
+  tm_borders(lwd = 2) + #plot the borders for these countries as well 
+  tm_shape(us_labels) + #add the labels
+  tm_text("location_id", #use the location_id number for identification
+          size = 1.5, 
+          xmod = 1.1,
+          ymod = -0.7,
+          just = "center",
+          bg.color = "white") +
+  tm_shape(locations_sf) + #add the locations where the Choniosphaera species were identified as point
+  tm_dots(col = "Species", #color the points by species
+          size = 0.5, 
+          palette = choniosphaera_palette, #use the pre-determined choniosphaera color palette
+          legend.show = FALSE) + 
+  tm_layout(fontfamily = "Times New Roman",
+            frame = FALSE) 
+
+#save the plot in the figures folder
+tmap_save(here("figures", "figure_s1_ne.jpg"), tm = ne_map)
+
+#print the map generated above 
+ne_map
+
+```
+
+
+#### 3. California
+
+```{r}
+#create a map with the locations that species of the genus Choniosphaera have been identified in California
+ca_map <- tm_shape(california) + #start with the countries dataframe
+  tm_borders(lwd = 0.5) + #plot the borders for all the countries of the world
+  tm_shape(ch_states) + #add the countries with the Choniosphaera species
+  tm_fill(col = "#A9BDB2", alpha = 0.7) + #fill these countries in for easier identification
+  tm_borders(lwd = 2) + #plot the borders for these countries as well 
+  tm_shape(us_labels) + #add the labels
+  tm_text("location_id", #use the location_id number for identification
+          size = 1.5, 
+          xmod = -1.1,
+          ymod = -0.3,
+          just = "center") +
+  tm_shape(locations_sf) + #add the locations where the Choniosphaera species were identified as point
+  tm_dots(col = "Species", #color the points by species
+          size = 0.5, 
+          palette = choniosphaera_palette, #use the pre-determined choniosphaera color palette
+          legend.show = FALSE) + 
+  tm_layout(fontfamily = "Times New Roman",
+            frame = FALSE) 
+
+#save the plot in the figures folder
+tmap_save(here("figures", "figure_s1_ca.jpg"), tm = ca_map)
+
+#print the map generated above 
+ca_map
+
+```
+
+#### 4. Europe
+
+```{r}
+#create a map with the locations that species of the genus Choniosphaera have been identified in Europe
+europe_map <- tm_shape(ch_europe) + #start with the countries with the Choniosphaera species
+  tm_fill(col = "#A9BDB2", alpha = 0.7) + #fill these countries in for easier identification
+  tm_borders(lwd = 2) + #plot the borders for these countries as well 
+  tm_shape(europe_labels) + #add the labels
+  tm_text("location_id", #use the location_id number for identification
+          size = 1.1, 
+          xmod = 0.2,
+          ymod = -0.6,
+          just = "center") +
+  tm_shape(locations_sf) + #add the locations where the Choniosphaera species were identified as point
+  tm_dots(col = "Species", #color the points by species
+          size = 0.2, 
+          palette = choniosphaera_palette, #use the pre-determined choniosphaera color palette
+          legend.show = FALSE) + 
+  tm_layout(fontfamily = "Times New Roman", #use Times New Romans as the font\
+            frame = FALSE) 
+
+#save the plot in the figures folder
+tmap_save(here("figures", "figure_s1_europe.jpg"), tm = europe_map)
+
+#print the map generated above 
+europe_map
+
+```
+
+
 ## c) Figure S2
 
 ### i) Intensity of Adult Nicothoid Infestation
 
 ```{r}
+#define the maximum Y value for the adults
+ymax_val_adult <- max(nico_counts_mil$den_adults_mil, na.rm = TRUE) * 1.05
+
 #create a plot of the intensity of the adult nico infestations 
 adult_intensity <- ggplot() +
-  geom_point(data = nico_counts_mil, #use the nico_counts_mil to show the data from each sample
-             aes(x = day, y = den_adults_mil, color = "adults"), #use the adults color from the nico_palette
-             size = 1.2, show.legend = FALSE) + #don't include a legend
-  geom_line(data = nico_density_mil, #use the nico_density_mil to show the data averaged from sample across three days in the developmental period
-            aes(x = avg_day_sample, y = avg_den_adults_mil, color = "black"), #plot the trend for the average
-            size = 1, show.legend = FALSE) + #don't include a legend
-  scale_color_manual(values = nico_palette) +  #use the nico_palette
-  scale_x_continuous(#name = "Development Day", #x-axis title
-                     breaks = seq(0, max(nico_counts_mil$day), by = 2)) + #determine the number of breaks for the x-axis 
-  scale_y_continuous(labels = function(y) format(y, scientific = TRUE)) + #format the y-axis labels in scientific notation
-  #labs(title = "Intensity of Adult Nicothoid Infestation", #title the plot
-       #y = "Intensity of Adult Nicothoids") +  #y-axis title
-  labs(x = NULL, y = NULL) +
+  geom_rect(data = eds_bands, #add background bands for each EDS stage using eds_bands data
+            aes(xmin = xmin, xmax = xmax, ymin = ymin_val, ymax = ymax_val_adult, fill = eds), color = NA) +
+  geom_point(data = nico_counts_mil,
+             aes(x = day, y = den_adults_mil),
+             color = "black", size = 1.2) +
+  geom_line(data = nico_density_mil,
+            aes(x = avg_day_sample, y = avg_den_adults_mil),
+            color = "black", size = 1) +
+  scale_fill_manual(values = setNames(eds_bands$fill_color, eds_bands$eds)) +
+  scale_x_continuous(breaks = seq(0, max(eds_bands$xmax), by = 2),
+                     sec.axis = dup_axis(breaks = eds_bands$xmid,
+                                         labels = eds_bands$eds,
+                                         name = "Host Egg Development Stage")) +
+  scale_y_continuous(labels = function(y) format(y, scientific = TRUE)) +
+  labs(x = "Development Day", y = "Infestation Intensity") +
   theme_classic() +
   theme(text = element_text(family = "Times New Roman"),
-        #plot.title = element_text(size = 16, #size for title font
-                                  #hjust = 0.5), #center the title
-        axis.title = element_text(face = "bold", #bold the axis title 
-                                  size = 14), #size for the axis title fonts
-        axis.text = element_text(size = 10))  #size for the axis text 
+        axis.title = element_text(face = "bold", size = 12),
+        axis.text = element_text(size = 10),
+        axis.text.x.top = element_text(size = 10),
+        axis.title.x.top = element_text(size = 12, face = "bold"),
+        legend.position = "none")
 
 #save the plot in the figures folder
 ggsave(here("figures", "figure_s2_a.jpg"), plot = adult_intensity)
 
-#print a preview of the plot  
+#print a preview of the plot 
 adult_intensity
 
 ```
@@ -667,70 +760,82 @@ adult_intensity
 ### ii) Intensity of Larval Nicothoid Infestation
 
 ```{r}
+#define the maximum Y value for the larvae
+ymax_val_larvae <- max(nico_counts_mil$den_larvae_mil, na.rm = TRUE) * 1.05
+
 #create a plot of the intensity of the larval nico infestations 
 larval_intensity <- ggplot() +
-  geom_point(data = nico_counts_mil, #use the nico_counts_mil to show the data from each sample
-             aes(x = day, y = den_larvae_mil, color = "larvae"), #use the larvae color from the nico_palette
-             size = 1.2, show.legend = FALSE) + #don't include a legend
-  geom_line(data = nico_density_mil, #use the nico_density_mil to show the data averaged from sample across three days in the developmental period
-            aes(x = avg_day_sample, y = avg_den_larvae_mil, color = "black"), #plot the trend for the average
-            size = 1, show.legend = FALSE) + #don't include a legend
-  scale_color_manual(values = nico_palette) +  #use the nico_palette
-  scale_x_continuous(#name = "Development Day", #x-axis title
-                     breaks = seq(0, max(nico_counts_mil$day), by = 2)) + #determine the number of breaks for the x-axis 
-  scale_y_continuous(labels = function(y) format(y, scientific = TRUE)) + #format the y-axis labels in scientific notation
-  #labs(title = "Intensity of Larval Nicothoid Infestation", #title the plot
-       #y = "Intensity of Larval Nicothoids") +  #y-axis title 
-  labs(x = NULL, y = NULL) +
+  geom_rect(data = eds_bands, #add background bands for each EDS stage using eds_bands data
+            aes(xmin = xmin, xmax = xmax, ymin = ymin_val, ymax = ymax_val_larvae, fill = eds), color = NA) +
+  geom_point(data = nico_counts_mil,
+             aes(x = day, y = den_larvae_mil),
+             color = "black", size = 1.2) +
+  geom_line(data = nico_density_mil,
+            aes(x = avg_day_sample, y = avg_den_larvae_mil),
+            color = "black", size = 1) +
+  scale_fill_manual(values = setNames(eds_bands$fill_color, eds_bands$eds)) +
+  scale_x_continuous(breaks = seq(0, max(eds_bands$xmax), by = 2),
+                     sec.axis = dup_axis(breaks = eds_bands$xmid,
+                                         labels = eds_bands$eds,
+                                         name = "Host Egg Development Stage")) +
+  scale_y_continuous(labels = function(y) format(y, scientific = TRUE)) +
+  labs(x = "Development Day", y = "Infestation Intensity") +
   theme_classic() +
   theme(text = element_text(family = "Times New Roman"),
-        #plot.title = element_text(size = 16, #size for title font
-                                  #hjust = 0.5), #center the title
-        axis.title = element_text(face = "bold", #bold the axis title 
-                                  size = 14), #size for the axis title fonts
-        axis.text = element_text(size = 10))  #size for the axis text 
+        axis.title = element_text(face = "bold", size = 12),
+        axis.text = element_text(size = 10),
+        axis.text.x.top = element_text(size = 10),
+        axis.title.x.top = element_text(size = 12, face = "bold"),
+        legend.position = "none")
 
 #save the plot in the figures folder
 ggsave(here("figures", "figure_s2_b.jpg"), plot = larval_intensity)
 
-#print a preview of the plot  
+#print a preview of the plot 
 larval_intensity
 
 ```
 
+### iii) Intensity of Nicothoid Egg Infestation
 
-### ii) Intensity of Nicothoid Egg Infestation
 
 ```{r}
-#create a plot of the intensity of the nico egg infestations 
+#define the maximum Y value for the nico_eggs
+ymax_val_nico_eggs <- max(nico_counts_mil$den_nico_eggs_mil, na.rm = TRUE) * 1.05
+
+#create a plot of the intensity of the nico eggs infestations 
 nico_eggs_intensity <- ggplot() +
-  geom_point(data = nico_counts_mil, #use the nico_counts_mil to show the data from each sample
-             aes(x = day, y = den_nico_eggs_mil, color = "nico_eggs"), #use the nico_eggs color from the nico_palette
-             size = 1.2, show.legend = FALSE) + #don't include a legend
-  geom_line(data = nico_density_mil, #use the nico_density_mil to show the data averaged from sample across three days in the developmental period
-            aes(x = avg_day_sample, y = avg_den_nico_eggs_mil, color = "black"), #plot the trend for the average
-            size = 1, show.legend = FALSE) + #don't include a legend
-  scale_color_manual(values = nico_palette) +  #use the nico_palette
-  scale_x_continuous(#name = "Development Day", #x-axis title
-                     breaks = seq(0, max(nico_counts_mil$day), by = 2)) + #determine the number of breaks for the x-axis 
-  scale_y_continuous(labels = function(y) format(y, scientific = TRUE)) + #format the y-axis labels in scientific notation
-  #labs(title = "Intensity of Nicothoid Egg Infestation", #title the plot
-       #y = "Intensity of Nicothoid Eggs") +  #y-axis title
-  labs(x = NULL, y = NULL) +
+  geom_rect(data = eds_bands, #add background bands for each EDS stage using eds_bands data
+            aes(xmin = xmin, xmax = xmax, ymin = ymin_val, ymax = ymax_val_nico_eggs, fill = eds), color = NA) +
+  geom_point(data = nico_counts_mil,
+             aes(x = day, y = den_nico_eggs_mil),
+             color = "black", size = 1.2) +
+  geom_line(data = nico_density_mil,
+            aes(x = avg_day_sample, y = avg_den_nico_eggs_mil),
+            color = "black", size = 1) +
+  scale_fill_manual(values = setNames(eds_bands$fill_color, eds_bands$eds)) +
+  scale_x_continuous(breaks = seq(0, max(eds_bands$xmax), by = 2),
+                     sec.axis = dup_axis(breaks = eds_bands$xmid,
+                                         labels = eds_bands$eds,
+                                         name = "Host Egg Development Stage")) +
+  scale_y_continuous(labels = function(y) format(y, scientific = TRUE)) +
+  labs(x = "Development Day", y = "Infestation Intensity") +
   theme_classic() +
   theme(text = element_text(family = "Times New Roman"),
-        #plot.title = element_text(size = 16, #size for title font
-                                  #hjust = 0.5), #center the title
-        axis.title = element_text(face = "bold", #bold the axis title 
-                                  size = 14), #size for the axis title fonts
-        axis.text = element_text(size = 10))  #size for the axis text 
+        axis.title = element_text(face = "bold", size = 12),
+        axis.text = element_text(size = 10),
+        axis.text.x.top = element_text(size = 10),
+        axis.title.x.top = element_text(size = 12, face = "bold"),
+        legend.position = "none")
 
 #save the plot in the figures folder
 ggsave(here("figures", "figure_s2_c.jpg"), plot = nico_eggs_intensity)
 
-#print a preview of the plot  
+#print a preview of the plot 
 nico_eggs_intensity
 
 ```
+
+
 
 

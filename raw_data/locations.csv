@@ -1,14 +1,14 @@
-family,genus,species,host_species,region,subregion,location,longitude,latitude,year,author,host_group,host_order,paper
-nicothoidae,choniosphaera,Ch. cancrorum,atelecylus undecimdentatus,canada,new brunswick,passamaquoddy bay,-66.9648,45.0913,1929,Connolly,brachyura,decapoda,"Connolly, 1929"
-nicothoidae,choniosphaera,Ch. cancrorum,cancer irroratus say,canada,new brunswick,passamaquoddy bay,-66.9648,45.0913,1929,Connolly,brachyura,decapoda,"Connolly, 1929"
-nicothoidae,choniosphaera,Ch. cancrorum,cancer borealis,canada,new brunswick,passamaquoddy bay,-66.9648,45.0913,1929,Connolly,brachyura,decapoda,"Connolly, 1929"
-nicothoidae,choniosphaera,Ch. cancrorum,carcinus maenas,usa,maine,linekin bay,-69.6281,43.8523,1957,Johnson,brachyura,decapoda,"Johnson, 1957"
-nicothoidae,choniosphaera,Ch. maenadis,carcinus maenas,france,hauts-de-france,english channel,1.6102,50.7695,1933,Bloch and Gallien,brachyura,decapoda,"Bloch and Gallien, 1933"
-nicothoidae,choniosphaera,Ch. maenadis,carcinus maenas,germany,borkum,wadden sea,7.9495,52.5787,1956,Fischer,brachyura,decapoda,"Fischer, 1954"
-nicothoidae,choniosphaera,Ch. indica,portunus sanguinolentus,india,tamil nadu,bay of bengal,79.5396,13.0827,1954,Gnanamuthu,brachyura,decapoda,"Gnanamuthu, 1954"
-nicothoidae,choniosphaera,Ch. indica,portunus pelagicus,vietnam,south central coast,south china sea,109.0526,12.2585,2022,Dang,brachyura,decapoda,"Dang, 2022"
-nicothoidae,choniosphaera,Ch. indica,portunus pelagicus,australia,queensland,moreton bay,152.9206,-27.0946,1993,Shields and Wood,brachyura,decapoda,"Shields and Wood, 1993"
-nicothoidae,choniosphaera,Ch. sp.,cancer anthonyi,usa,california,gaviota coast,-120.2276,34.4708,2021,Kuris,brachyura,decapoda,this publication
-nicothoidae,choniosphaera,Ch. sp.,cancer productus,usa,california,gaviota coast,-120.2276,34.4708,2021,Kuris,brachyura,decapoda,this publication
-nicothoidae,choniosphaera,Ch. sp.,cancer antennarius,usa,california,gaviota coast,-120.2276,34.4708,2021,Kuris,brachyura,decapoda,this publication
-nicothoidae,choniosphaera,Ch. sp.,cancer anthonyi,usa,california,san diego,-117.1611,32.7157,2021,Kuris,brachyura,decapoda,this publication
+family,genus,species,host_species,region,subregion,location,longitude,latitude,year,author,host_group,host_order,paper,notes
+nicothoidae,choniosphaera,Ch. cancrorum,atelecylus undecimdentatus,canada,new brunswick,passamaquoddy bay,-66.890808,45.11528,1929,Connolly,brachyura,decapoda,"Connolly, 1929",NA
+nicothoidae,choniosphaera,Ch. cancrorum,cancer irroratus say,canada,new brunswick,passamaquoddy bay,-66.890808,45.11528,1929,Connolly,brachyura,decapoda,"Connolly, 1929",NA
+nicothoidae,choniosphaera,Ch. cancrorum,cancer borealis,canada,new brunswick,passamaquoddy bay,-66.890808,45.11528,1929,Connolly,brachyura,decapoda,"Connolly, 1929",NA
+nicothoidae,choniosphaera,Ch. cancrorum,carcinus maenas,usa,maine,linekin bay,-69.6281,43.8523,1957,Johnson,brachyura,decapoda,"Johnson, 1957",NA
+nicothoidae,choniosphaera,Ch. maenadis,carcinus maenas,france,hauts-de-france,english channel,1.6102,50.7695,1933,Bloch and Gallien,brachyura,decapoda,"Bloch and Gallien, 1933",NA
+nicothoidae,choniosphaera,Ch. maenadis,carcinus maenas,germany,borkum,wadden sea,7.9495,53.5931,1956,Fischer,brachyura,decapoda,"Fischer, 1954",NA
+nicothoidae,choniosphaera,Ch. indica,portunus sanguinolentus,india,tamil nadu,bay of bengal,79.5396,13.0827,1954,Gnanamuthu,brachyura,decapoda,"Gnanamuthu, 1954",no longer in genus
+nicothoidae,choniosphaera,Ch. indica,portunus pelagicus,vietnam,south central coast,south china sea,109.0526,12.2585,2022,Dang,brachyura,decapoda,"Dang, 2022",no longer in genus
+nicothoidae,choniosphaera,Ch. indica,portunus pelagicus,australia,queensland,moreton bay,152.9206,-27.0946,1993,Shields and Wood,brachyura,decapoda,"Shields and Wood, 1993",no longer in genus
+nicothoidae,choniosphaera,Ch. sp.,cancer anthonyi,usa,california,gaviota coast,-120.2276,34.4708,2021,Kuris,brachyura,decapoda,this publication,NA
+nicothoidae,choniosphaera,Ch. sp.,cancer productus,usa,california,gaviota coast,-120.2276,34.4708,2021,Kuris,brachyura,decapoda,this publication,NA
+nicothoidae,choniosphaera,Ch. sp.,cancer antennarius,usa,california,gaviota coast,-120.2276,34.4708,2021,Kuris,brachyura,decapoda,this publication,NA
+nicothoidae,choniosphaera,Ch. sp.,cancer anthonyi,usa,california,san diego,-117.1611,32.7157,2021,Kuris,brachyura,decapoda,this publication,NA

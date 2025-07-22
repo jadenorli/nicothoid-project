@@ -1,6 +1,6 @@
 # Abstract
 
-A previously unobserved and potentially novel copepod egg predator (Nicothoidae cf. *Choniosphaera* sp.) was recently discovered in the egg masses and gills of three commercially important rock crab species (*Cancer anthonyi*, *C. antennarius*, and *C. productus*) along the Gaviota Coast of Southern California west of Santa Barbara. Nicothoid egg predators have never been observed in crabs along the Pacific coast of the Americas, despite extensive historical work on cancrid crab brood mortality caused by nemertean egg predators in the 1990s. This outbreak is a recent and possibly unique event. Female copepods appear highly modified, mimicking the coloration and globular shape of crab eggs. The copepods feed by puncturing a small hole in the shell of the crab egg, aborting the development of the embryo and subsequently facilitating entry of microbial agents. We document high copepod prevalence in ovigerous crabs along the Santa Barbara coast. Lack of fishery management coupled with the geographical extent and host specificity of this potential threat to rock crab populations warrants further investigation.
+A previously unobserved and potentially novel copepod egg predator (Nicothoidae cf. *Choniosphaera* sp.) was recently discovered in the egg masses and gills of three commercially important rock crab species (*Metacarcinus anthonyi*, *Romaleon antennarium*, and *Cancer productus*) along the Gaviota Coast of Southern California west of Santa Barbara. Nicothoid egg predators have never been observed in crabs along the Pacific coast of the Americas, despite extensive historical work on cancrid crab brood mortality caused by nemertean egg predators in the 1990s. This outbreak is a recent and possibly unique event. Female copepods appear highly modified, mimicking the coloration and globular shape of crab eggs. The copepods feed by puncturing a small hole in the shell of the crab egg, aborting the development of the embryo and subsequently facilitating entry of microbial agents. We document high copepod prevalence in ovigerous crabs along the Santa Barbara coast. Lack of fishery management coupled with the geographical extent and host specificity of this potential threat to rock crab populations warrants further investigation.
 
 # Methods
 
@@ -10,24 +10,22 @@ See publication supplemental documentation (Appendix S1) for full methods.
 
 ``` bash
       .
-      ├── .DS_Store
-      ├── .RData
-      ├── .Rhistory
-      ├── .gitignore
       ├── README.md
       ├── README.rmd
+      ├── README.html
       ├── code
       │    ├── nicothoid_overview.html
       │    └── nicothoid_overview.qmd
       ├── figures
-      │    ├── .DS_Store
-      │    ├── figure_s1.jpg
+      │    ├── figure_s1_ca.jpg
+      │    ├── figure_s1_europe.jpg
+      │    ├── figure_s1_full.jpg
+      │    ├── figure_s1_ne.jpg
       │    ├── figure_s2_a.jpg
       │    ├── figure_s2_b.jpg
       │    └── figure_s2_c.jpg
       ├── nicothoid-project.Rproj
       ├── raw_data
-      │    ├── .DS_Store
       │    ├── dissection_data.csv
       │    ├── egg_mass_data.csv
       │    ├── locations.csv
@@ -42,7 +40,7 @@ See publication supplemental documentation (Appendix S1) for full methods.
 -   description: a CSV which contains the metadata collected for each individual crab collected and monitored during the duration of this study
 -   format: csv
 -   variables:
-    -   **crab_id**: the unique identifcation tag given to each indvidual crab and follows the structure below
+    -   **crab_id**: the unique identifcation tag given to each individual crab and follows the structure below
 
         1.  \*\*species (first three letters of species name)
 
