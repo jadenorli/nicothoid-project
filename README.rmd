@@ -1,3 +1,7 @@
+---
+output: github_document
+---
+
 # Abstract
 
 A previously unobserved and potentially novel copepod egg predator (Nicothoidae cf. *Choniosphaera* sp.) was recently discovered in the egg masses and gills of three commercially important rock crab species (*Metacarcinus anthonyi*, *Romaleon antennarium*, and *Cancer productus*) along the Gaviota Coast of Southern California west of Santa Barbara. Nicothoid egg predators have never been observed in crabs along the Pacific coast of the Americas, despite extensive historical work on cancrid crab brood mortality caused by nemertean egg predators in the 1990s. This outbreak is a recent and possibly unique event. Female copepods appear highly modified, mimicking the coloration and globular shape of crab eggs. The copepods feed by puncturing a small hole in the shell of the crab egg, aborting the development of the embryo and subsequently facilitating entry of microbial agents. We document high copepod prevalence in ovigerous crabs along the Santa Barbara coast. Lack of fishery management coupled with the geographical extent and host specificity of this potential threat to rock crab populations warrants further investigation.
