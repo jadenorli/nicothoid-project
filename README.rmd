@@ -57,7 +57,7 @@ Cells infilled with NA indicate that information in not applicable.
             a)  Gaviota coast: GAV
             b)  Unknown: UNK
             c)  Alegria Beach: ALE
-            d)  Sripps: SIO
+            d)  Sripps: SIO 
             e)  Hendry's Beach: HNE
 
         3.  unique number (unique number starting with 001) \*\*for individuals that are NOT sexually mature females (i.e. males or immature females), the species name will be given a prefix of M for males and IF for immature females
