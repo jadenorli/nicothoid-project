@@ -35,12 +35,14 @@ See publication supplemental documentation (Appendix S1) for full methods.
 
 # Data Descriptions
 
+Cells infilled with NA indicate that information in not applicable. 
+
 ## 1. metadata.csv
 
 -   description: a CSV which contains the metadata collected for each individual crab collected and monitored during the duration of this study
 -   format: csv
 -   variables:
-    -   **crab_id**: the unique identifcation tag given to each individual crab and follows the structure below
+    -   **crab_id**: the unique identification tag given to each individual crab and follows the structure below
 
         1.  \*\*species (first three letters of species name)
 
